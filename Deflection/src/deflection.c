@@ -16,8 +16,8 @@ int main()
 	// print text on >> tile << h=1,v=0
 	// VDP_drawText ( "X", 39,  27 );
 
-	Vector2D speed		= {1, 1};
-	Vector2D position	= {1, 1};
+	Vector2D speed		= { 0.2, 0.2 };
+	Vector2D position	= { 1, 1 };
 
 	// Init joy handler
 	JOY_init();
@@ -39,14 +39,13 @@ int main()
 void bounceCharacter( Vector2D * speed, Vector2D * position )
 {
 	// 1) hack to clear old position
-	//VDP_drawText( " ", position[0], position[1] );
 	VDP_setTileMapXY( VDP_PLAN_A, 0, position->x, position->y );
 
-        // 2) animation step: just a guess to be adjusted later
+	// 2) animation step: just a guess to be adjusted later
 	position->x += speed->x;
 	position->y += speed->y;
 
-        // 3) coordinate clamping and speed adjustment
+	// 3) coordinate clamping and speed adjustment
 	if ( position->x > 39 )
 	{
 		position->x = 39;
@@ -72,8 +71,8 @@ void bounceCharacter( Vector2D * speed, Vector2D * position )
 	}
 
 	// 4) draws the Tile at the current position
-	VDP_drawText( "a", position->x, position->y );
-	VDP_setTileMapXY( VDP_PLAN_A, TILE_FONTINDEX + 'a' - 32, position->x, position->y );
+	VDP_drawText( "O", position->x, position->y );
+	VDP_setTileMapXY( VDP_PLAN_A, TILE_FONTINDEX + 'O' - 32, position->x, position->y );
 }
 
 void renderPlayers (Vector2D p1, Vector2D p2) {
@@ -99,7 +98,8 @@ void joyAtkHandler ( u16 joy, u16 joyChanged, u16 state ) {
 	// Player 1
 	if (joy == JOY_1)
 	{
-		if (state & BUTTON_A )
+		if ( (state & BUTTON_A) || (state & BUTTON_B) || (state & BUTTON_C) )
+		// if (state & BUTTON_B )
 		{
 			if (p1_facing.y != 0)
 			{
@@ -136,38 +136,38 @@ void joyAtkHandler ( u16 joy, u16 joyChanged, u16 state ) {
 			// }
 		}
 
-		else
-		{
+		// else
+		// {
 			// Clears previous position
-			VDP_drawText( " ", p1.x, p1.y );
-			VDP_drawText( " ", p1.x + p1_facing.x, p1.y - p1_facing.y );
+			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
+			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x + p1_facing.x, p1.y - p1_facing.y );
 
-			if (state & BUTTON_UP)
-			{
-				if (p1.y >= 1) p1.y -= 1;
-				p1_facing.x = 0;
-				p1_facing.y = 1;
-			}
-			else if (state & BUTTON_DOWN)
-			{
-				if (p1.y < 27) p1.y += 1;
-				p1_facing.x = 0;
-				p1_facing.y = -1;
-			}
-
-			else if (state & BUTTON_RIGHT)
-			{
-				if (p1.x < 39) p1.x += 1;
-				p1_facing.x = 1;
-				p1_facing.y = 0;
-			}
-			else if (state & BUTTON_LEFT)
-			{
-				if (p1.x >= 1) p1.x -= 1;
-				p1_facing.x = -1;
-				p1_facing.y = 0;
-			}
+		if (state & BUTTON_UP)
+		{
+			if (p1.y >= 1) p1.y -= 1;
+			p1_facing.x = 0;
+			p1_facing.y = 1;
 		}
+		else if (state & BUTTON_DOWN)
+		{
+			if (p1.y < 27) p1.y += 1;
+			p1_facing.x = 0;
+			p1_facing.y = -1;
+		}
+
+		else if (state & BUTTON_RIGHT)
+		{
+			if (p1.x < 39) p1.x += 1;
+			p1_facing.x = 1;
+			p1_facing.y = 0;
+		}
+		else if (state & BUTTON_LEFT)
+		{
+			if (p1.x >= 1) p1.x -= 1;
+			p1_facing.x = -1;
+			p1_facing.y = 0;
+		}
+		// }
 	}
 
 	// Player 2
@@ -197,24 +197,24 @@ void joyMoveHandler ( u16 joy, u16 joyChanged, u16 state ) {
 
 		if (state & BUTTON_UP)
 		{
-			VDP_drawText( " ", p1.x, p1.y );
+			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
 			if (p1.y >= 1) p1.y -= 1;
 		}
 		else if (state & BUTTON_DOWN)
 		{
-			VDP_drawText( " ", p1.x, p1.y );
+			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
 			if (p1.y < 27) p1.y += 1;
 		}
 
 
 		if (state & BUTTON_LEFT)
 		{
-			VDP_drawText( " ", p1.x, p1.y );
+			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
 			if (p1.x >= 1) p1.x -= 1;
 		}
 		else if (state & BUTTON_RIGHT)
 		{
-			VDP_drawText( " ", p1.x, p1.y );
+			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
 			if (p1.x < 39) p1.x += 1;
 		}
 
@@ -238,20 +238,20 @@ void joyMoveHandler ( u16 joy, u16 joyChanged, u16 state ) {
 	// }
 }
 
+// Vector2D Utils
+double dot ( Vector2D v1, Vector2D v2 )
+{
+	return v1.x * v2.x + v1.y * v2.y;
+}
 
+Vector2D diff ( Vector2D v1, Vector2D v2 )
+{
+	Vector2D rv = { v1.x - v2.x, v1.y - v2.y };
+	return rv;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+double sqDist ( Vector2D v1, Vector2D v2 )
+{
+	Vector2D dif = diff(v1, v2);
+	return dot(dif, dif);
+}

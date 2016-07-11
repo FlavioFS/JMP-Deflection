@@ -1,19 +1,49 @@
-TODO List (equipe)
-- Estabelecer detalhes básicos de game design
-  (quantidade de personagens, de projéteis, de estágios, opções de menu e jogo etc);
-- Estabelecer as características computacionais dos personagens
-  (velocidades, cooldowns, detalhes de lógica de programação);
+================================================================
+TODO (team)
+	> Estabelecer detalhes básicos de game design (quantidade de personagens, de projéteis, de estágios, opções de menu e jogo etc);
+	> Estabelecer as características computacionais dos personagens (velocidades, cooldowns, detalhes de lógica de programação);
+	> Decidir a trilha sonora;
 
 ================================================================
+TODO (individual)
+	> Implementar rendering de sprites (blocker: migração de rendering abaixo);
+	> Migrar rendering de drawtext para sprites;
 
-TODO List (individual)
-- Criar sprites de "rascunho" para teste do jogo na fase de programação (e.g.: quadrados, hitboxes com cores diferentes);
+	# A considerar
+		- Bresenham para movimento do projétil;
 
-- Flávio  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Flavio
+	> Movimento: substituir callback por leitura de input frame a frame;
 
+Lucas
+	> Criar sprites de "rascunho" para debug do jogo (e.g.: quadrados, hitboxes com cores variadas);
 
-- Lucas   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Migrar o código da letra 'a' para ser adaptado;
+Vicenzo
 
+================================================================
+KNOWN ISSUES
+	> Movimento baseado em callback não permite deslocamento contínuo segurando o botão (é preciso ficar apertando para se movimentar 1 tile por vez).
 
-- Vicenzo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================
+DONE
+Flávio
+	> Migrar o código da letra 'a' para ser adaptado;
+	> Criação de estrutura Vector2D, e de suas funções de utilidade;
+	> Movimento baseado em callback;
+	> Render de personagens e de projétil baseado em drawtext;
+
+Lucas
+	> Abstract da interface gráfica base;
+
+ ================================================================
+ PLANOS A LONGO PRAZO
+ 	> Title screen;
+ 	> Options;
+ 	> Credits;
+ 	> 4 personagens distintos;
+ 	> Paletas de cores para personagens;
+ 	> Obstáculos;
+ 	> Power-ups;
+ 	> Arenas variadas;
+ 	> Preview sandbox na tela de título ("Press start to get ready");
+ 	> PT-BR, EN-US;

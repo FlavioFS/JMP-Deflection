@@ -255,3 +255,8 @@ double sqDist ( Vector2D v1, Vector2D v2 )
 	Vector2D dif = diff(v1, v2);
 	return dot(dif, dif);
 }
+
+double cross ( Vector2D v1, Vector2D v2 )
+{
+	return v1.x * v2.y - v2.x * v1.y;
+}

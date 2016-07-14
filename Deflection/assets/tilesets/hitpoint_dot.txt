@@ -1,0 +1,1 @@
+TILESET  hitpoint_dot  "hitpoint_dot.png"  0

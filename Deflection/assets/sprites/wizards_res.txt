@@ -1,0 +1,1 @@
+SPRITE wizards "wizards.png" 3 3

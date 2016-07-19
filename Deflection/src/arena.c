@@ -23,13 +23,13 @@ void draw_arena()
 	
 	// lets draw !
 	// ground 
-	VDP_fillTileMapRect(PLAN_B,
+	VDP_fillTileMapRect(VDP_PLAN_B,
 						TILE_ATTR_FULL(PAL3,0,0,0,TILE_USERINDEX+5),
 						0, 0,
 						40, 28);
 						
 	// the screen 'forehead'
-	VDP_fillTileMapRect(PLAN_B,
+	VDP_fillTileMapRect(VDP_PLAN_B,
 						TILE_ATTR_FULL(PAL3,0,0,0,TILE_USERINDEX),
 						0, 0,
 						40, 3);
@@ -90,7 +90,7 @@ void draw_obstacle(unsigned int x,unsigned int y, unsigned int w, unsigned int h
 	unsigned int real_x = x+1;
 	unsigned int real_y = y+4;
 	
-	VDP_fillTileMapRect(PLAN_B,
+	VDP_fillTileMapRect(VDP_PLAN_B,
 						TILE_ATTR_FULL(PAL3,0,0,0,TILE_USERINDEX),
 						real_x, real_y,
 						w, h);

@@ -1,7 +1,7 @@
-START "rescomp" "rescomp.exe" wizards_res.txt
+START "rescomp" "rescomp.exe" wizard_res.txt
 
 pause
 
-move wizards_res.h ..\..\inc\sprites
+move wizard_res.h ..\..\inc\sprites
 
-move wizards_res.s ..\..\src\
+move wizard_res.s ..\..\src\

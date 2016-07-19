@@ -3,44 +3,29 @@
 
 #include <genesis.h>
 #include "vector_utils.h"
-#include "deflection.h"
 #include "arena.h"
-#include "players.h"
-
-// Global variables
-Vector2D p1 = { 13, 14 };
-Vector2D p2 = { 26, 14 };
-
-Vector2D p1_facing = {  1, 0 };
-Vector2D p2_facing = { -1, 0 };
+#include "red_wizard.h"
 
 int main()
-{
-	// print text on >> tile << h=1,v=0
-	// VDP_drawText ( "X", 39,  27 );
-
-	Vector2D speed		= { 0.2, 0.2 };
-	Vector2D position	= { 1, 1 };
-
-	// Init joy handler
-	JOY_init();
-	JOY_setEventHandler( &joyAtkHandler );
-
-	// lets try rendering the arena !
+{	
+	SPR_init(0);
+	
 	draw_arena();
 	
-	// lets try loadind player sprites 
-	load_players_sprite_data();
-	
+	init_player_wizard(128, 128);
+				   
 	// game loop
 	while (1)
 	{
-		bounceCharacter( &speed, &position );
-		renderPlayers(p1, p2);
-
+		control_wizard();
+		
+		SPR_update(&wizard_sprite, 1);
+		
 		// wait for the screen to refresh
 		VDP_waitVSync();
 	}
+	
+	SPR_end();
 
 	return 0;
 }

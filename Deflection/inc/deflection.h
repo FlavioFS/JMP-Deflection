@@ -15,7 +15,7 @@ void directionalInput	();
 // Vector2D utils
 fix32 dot 			( Vector2D v1, Vector2D v2 );
 Vector2D diff		( Vector2D v1, Vector2D v2 );
-fix32 sqDist			( Vector2D v1, Vector2D v2 );
+fix32 sqDist		( Vector2D v1, Vector2D v2 );
 u8 absLEQ			( Vector2D  v, fix32 value );
 
 const static Vector2D V2D_NORTH = {  0,  1 };

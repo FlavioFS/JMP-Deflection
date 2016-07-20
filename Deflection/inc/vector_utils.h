@@ -12,7 +12,6 @@ typedef struct Vector2D
 void bounceCharacter	( Vector2D * speed, Vector2D * position	);
 void renderPlayers		( Vector2D p1_pos, Vector2D p2_pos		);
 void joyAtkHandler		( u16 joy, u16 joyChanged, u16 state	);
-void directionalInput	();
 
 // Vector2D utils
 fix32 dot 		( Vector2D v1, Vector2D v2 );

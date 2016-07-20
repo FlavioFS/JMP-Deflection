@@ -2,14 +2,15 @@
 
 void init_player_wizard(int posx, int posy)
 {
-	VDP_setPalette(PAL2, wizard_res.palette->data);
+	VDP_setPaletteColors(PAL2, spr_wizard_def.palette->data, 64);
+	// VDP_setPalette(PAL2,  spr_knighty.definition->palette->palette);
 	
-	SPR_initSprite(&wizard_sprite, &wizard_res, 
+	SPR_initSprite(&WIZARD_SPR, &spr_wizard_def, 
 				   posx, posy,
-				   TILE_ATTR(PAL2, 1, 0, 0));
+				   TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
 }
 
-void control_wizard()
+void wizard_control(Vector2D * v, u16 JOY_NUMBER)
 {
-	//
+	directionalInput(v, JOY_NUMBER);
 }

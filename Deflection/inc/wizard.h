@@ -2,12 +2,14 @@
 #define WIZARD_H
 
 #include <genesis.h>
-#include "sprites/wizard_res.h"
+#include "gfx.h"
+#include "controls.h"
+// #include "sprites/wizard_res.h"
 
-Sprite wizard_sprite;
-int move_speed = 1;
+Sprite WIZARD_SPR;
+// int WIZARD_SPD = 1;
 
 void init_player_wizard(int, int);
-void control_wizard();
+void wizard_control(Vector2D * v, u16 JOY_NUMBER);
 
 #endif

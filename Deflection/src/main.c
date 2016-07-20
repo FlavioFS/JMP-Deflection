@@ -6,6 +6,7 @@
 #include "vector_utils.h"
 #include "arena.h"
 #include "wizard.h"
+#include "knighty.h"
 #include "controls.h"
 #include "physics.h"
 
@@ -27,10 +28,11 @@ Vector2D p2_dir = { -1, 0 };
 Vector2D bulPos = { FIX32(19), FIX32(14) };
 Vector2D bulVel = { FIX32( 0), FIX32( 0) };
 
+Sprite spr_players [2];
+
 int main()
 {
-	// print text on >> tile << h=1,v=0
-	// VDP_drawText ( "X", 39,  27 );
+	VDP_setScreenWidth320();
 
 	Vector2D speed		= { FIX32(0.2), FIX32(0.2) };
 	Vector2D position	= { FIX32(  1), FIX32(  1) };
@@ -40,20 +42,27 @@ int main()
 	JOY_setEventHandler( &joyAtkHandler );
 
 	// Under construction
+	// SPR_init( (4 * 8) + (3 * 3 * 9) );	// Knighty is 2x2 tiles and 8 frames, Wizard is 3x3 and 9 frames
 	SPR_init(0);
 	draw_arena();
 	init_player_wizard(128, 128);
+	init_player_knighty(256, 128);
 
+	spr_players[0] = WIZARD_SPR;
+	spr_players[1] = KNIGHTY_SPR;
 
 	// game loop
 	while (1)
 	{
-		directionalInput( &p1, &p2 );
+		// directionalInput( &p1, &p2 );
+		wizard_control(&p1, JOY_1);
+		knighty_control(&p2, JOY_2);
+
 		bounceCharacter( &speed, &position );
 		debugPlayers(p1, p2, p1_dir, p2_dir);
 
-		control_wizard();
-		SPR_update(&wizard_sprite, 1);
+		// control_wizard(&p1);
+		SPR_update(spr_players, 1);
 
 		// wait for the screen to refresh
 		VDP_waitVSync();
@@ -70,6 +79,9 @@ int main()
  */
  void joyAtkHandler ( u16 joy, u16 joyChanged, u16 state )
 {
+	int xc = fix32ToInt(p1.x);
+	int yc = fix32ToInt(p1.y);
+
 	// Player 1
 	if (joy == JOY_1)
 	{
@@ -78,30 +90,31 @@ int main()
 		{
 			if (p1_dir.y != 0)
 			{
-				VDP_drawText( "XXX", p1.x - 1, p1.y - p1_dir.y );
-				VDP_drawText( "XXX", p1.x - 1, p1.y - 2*p1_dir.y );
+				VDP_drawText( "XXX", xc - 1, fix32ToInt(p1.y - p1_dir.y) );
+				VDP_drawText( "XXX", xc - 1, fix32ToInt(p1.y - 2*p1_dir.y) );
 			}
 			else if (p1_dir.x != 0)
 			{
-				VDP_drawText( "XX", p1.x + 2*p1_dir.x, p1.y - 1 );
-				VDP_drawText( "XX", p1.x + 2*p1_dir.x, p1.y     );
-				VDP_drawText( "XX", p1.x + 2*p1_dir.x, p1.y + 1 );
+				VDP_drawText( "XX", fix32ToInt(p1.x + 2*p1_dir.x), yc - 1 );
+				VDP_drawText( "XX", fix32ToInt(p1.x + 2*p1_dir.x), yc     );
+				VDP_drawText( "XX", fix32ToInt(p1.x + 2*p1_dir.x), yc + 1 );
 			}
 		}
-
 		
-		VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
-		VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x + p1_dir.x, p1.y - p1_dir.y );
+		VDP_setTileMapXY( VDP_PLAN_A, 0, xc, yc );
+		VDP_setTileMapXY( VDP_PLAN_A, 0, fix32ToInt(p1.x + p1_dir.x), fix32ToInt(p1.y - p1_dir.y) );
 	}
 }
 
+// Old
+/*
 void joyMoveHandler ( u16 joy, u16 joyChanged, u16 state ) {
 	// Player 1
 	if (joy == JOY_1)
 	{
 		if (state & BUTTON_START)		// Press
 		{
-			/* code */
+
 		}
 		else if (joyChanged & BUTTON_START)	// Release
 		{
@@ -148,6 +161,6 @@ void joyMoveHandler ( u16 joy, u16 joyChanged, u16 state ) {
 	// Player 2
 	// else if (joy == JOY_1B)
 	// {
-		/* code */
 	// }
 }
+*/

@@ -13,7 +13,7 @@ TODO (individual)
 		- Bresenham para movimento do projétil;
 
 Flavio
-	> Movimento: substituir callback por leitura de input frame a frame;
+	> ??
 
 Lucas
 	> Criar sprites de "rascunho" para debug do jogo (e.g.: quadrados, hitboxes com cores variadas);
@@ -31,6 +31,9 @@ Flávio
 	> Criação de estrutura Vector2D, e de suas funções de utilidade;
 	> Movimento baseado em callback;
 	> Render de personagens e de projétil baseado em drawtext;
+	> Movimento: substituir callback por leitura de input frame a frame;
+	> Sprite: knighty
+	> Merge das branches
 
 Lucas
 	> Abstract da interface gráfica base;

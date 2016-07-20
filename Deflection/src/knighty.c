@@ -2,7 +2,9 @@
 
 void init_player_knighty(int posx, int posy)
 {
-	VDP_setPaletteColors(0, spr_knighty_def.palette->data, 64);
+	VDP_setPalette(0, spr_knighty_def.palette->data);
+	// VDP_setPaletteColors(0, spr_knighty_def.palette->data, 64);
+	// VDP_setPaletteColors(0, palette_black, 64);
 
 
 	SPR_initSprite(&KNIGHTY_SPR, &spr_knighty_def, 

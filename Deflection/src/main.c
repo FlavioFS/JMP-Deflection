@@ -43,13 +43,13 @@ int main()
 
 	// Under construction
 	// SPR_init( (4 * 8) + (3 * 3 * 9) );	// Knighty is 2x2 tiles and 8 frames, Wizard is 3x3 and 9 frames
-	SPR_init(0);
+	SPR_init( (4 * 8) + (3 * 3 * 9) );
 	draw_arena();
-	init_player_wizard(128, 128);
-	init_player_knighty(256, 128);
+	init_player_wizard(140, 128);
+	init_player_knighty(128, 128);
 
-	spr_players[0] = WIZARD_SPR;
-	spr_players[1] = KNIGHTY_SPR;
+	spr_players[1] = WIZARD_SPR;
+	spr_players[0] = KNIGHTY_SPR;
 
 	// game loop
 	while (1)

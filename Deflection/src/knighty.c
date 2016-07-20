@@ -12,7 +12,8 @@ void init_player_knighty(int posx, int posy)
 				   TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
 }
 
-void knighty_control(Vector2D * v, u16 JOY_NUMBER)
+void knighty_control(Vector2D * v, u16 JOY_NUMBER, Sprite * target)
 {
-	directionalInput(v, JOY_NUMBER);
+	if (directionalInput(v, JOY_NUMBER)) SPR_setAnim(target, KNIGHTY_WALK);
+	else SPR_setAnim(target, KNIGHTY_IDLE);
 }

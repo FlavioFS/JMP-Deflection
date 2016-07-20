@@ -15,8 +15,8 @@ void joyAtkHandler ( u16 joy, u16 joyChanged, u16 state );
 
 //// Global variables
 // Players
-Vector2D p1 = { FIX32(13), FIX32(14) };
-Vector2D p2 = { FIX32(26), FIX32(14) };
+Vector2D p1 = { FIX32(128), FIX32(128) };
+Vector2D p2 = { FIX32(150), FIX32(128) };
 
 // Vector2D v1 = { 0, 0 };
 // Vector2D v2 = { 0, 0 };
@@ -45,18 +45,22 @@ int main()
 	// SPR_init( (4 * 8) + (3 * 3 * 9) );	// Knighty is 2x2 tiles and 8 frames, Wizard is 3x3 and 9 frames
 	SPR_init( (4 * 8) + (3 * 3 * 9) );
 	draw_arena();
-	init_player_wizard(140, 128);
-	init_player_knighty(128, 128);
 
-	spr_players[1] = WIZARD_SPR;
+	init_player_knighty(fix32ToInt(p1.x), fix32ToInt(p1.x));
+	init_player_wizard(fix32ToInt(p2.x), fix32ToInt(p2.y));
+	
 	spr_players[0] = KNIGHTY_SPR;
+	spr_players[1] = WIZARD_SPR;
+
+	SPR_setAnim(&spr_players[0], KNIGHTY_IDLE);
+	SPR_setAnim(&spr_players[1], WIZARD_ROTATE);
 
 	// game loop
 	while (1)
 	{
 		// directionalInput( &p1, &p2 );
-		wizard_control(&p1, JOY_1);
-		knighty_control(&p2, JOY_2);
+		wizard_control(&p1, JOY_1, &spr_players[1]);
+		knighty_control(&p2, JOY_2, &spr_players[0]);
 
 		bounceCharacter( &speed, &position );
 		debugPlayers(p1, p2, p1_dir, p2_dir);

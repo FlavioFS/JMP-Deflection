@@ -1,6 +1,8 @@
 #ifndef WIZARD_H
 #define WIZARD_H
 
+#define WIZARD_ROTATE 0
+
 #include <genesis.h>
 #include "gfx.h"
 #include "controls.h"
@@ -10,6 +12,6 @@ Sprite WIZARD_SPR;
 // int WIZARD_SPD = 1;
 
 void init_player_wizard(int, int);
-void wizard_control(Vector2D * v, u16 JOY_NUMBER);
+void wizard_control(Vector2D * v, u16 JOY_NUMBER, Sprite * target);
 
 #endif

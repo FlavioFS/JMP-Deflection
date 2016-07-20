@@ -11,7 +11,8 @@ void init_player_wizard(int posx, int posy)
 				   TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
 }
 
-void wizard_control(Vector2D * v, u16 JOY_NUMBER)
+void wizard_control(Vector2D * v, u16 JOY_NUMBER, Sprite * target)
 {
-	directionalInput(v, JOY_NUMBER);
+	if (directionalInput(v, JOY_NUMBER)) SPR_setAnim(target, WIZARD_ROTATE);
+	else SPR_setAnim(target, WIZARD_ROTATE);
 }

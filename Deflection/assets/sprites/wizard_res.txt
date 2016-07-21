@@ -1,1 +1,0 @@
-SPRITE wizard_res "wizard.png" 3 3

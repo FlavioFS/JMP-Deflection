@@ -7,52 +7,41 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////*/
 void bounceCharacter( Vector2D * speed, Vector2D * position )
 {
-	int xc = fix32ToInt(position->x);
-	int yc = fix32ToInt(position->y);
-
 	// 1) hack to clear old position
-	VDP_setTileMapXY( VDP_PLAN_A, 0, xc, yc );
+	VDP_setTileMapXY( VDP_PLAN_A, 0, fix32ToInt(position->x), fix32ToInt(position->y) );
 
 	// 2) animation step: just a guess to be adjusted later
-	xc += speed->x;
-	yc += speed->y;
+	position->x += speed->x;
+	position->y += speed->y;
 
 	// 3) coordinate clamping and speed adjustment
-	if ( xc > 39 )
+	if ( position->x > 39 )
 	{
-		xc = 39;
+		position->x = 39;
 		speed->x = -speed->x;
 	}
 
-	if ( xc < 0 )
+	if ( position->x < 0 )
 	{
-		xc =  0;
-		speed->x   *= -1;
+		position->x =  0;
+		speed->x = -speed->x;
 	}
 
-	if ( yc > 27 )
+	if ( position->y > 27 )
 	{
-		yc = 27;
-		speed->y   *= -1;
+		position->y = 27;
+		speed->y = -speed->y;
 	}
 
-	if ( yc < 0 )
+	if ( position->y < 0 )
 	{
-		yc =  0;
-		speed->y   *= -1;
+		position->y =  0;
+		speed->y = -speed->y;
 	}
 
 	// 4) draws the Tile at the current position
+	int xc = fix32ToInt(position->x);
+	int yc = fix32ToInt(position->y);
 	VDP_drawText( "O", xc, yc );
 	VDP_setTileMapXY( VDP_PLAN_A, TILE_FONTINDEX + 'O' - 32, xc, yc );
 }
-
-void debugPlayers (Vector2D p1, Vector2D p2, Vector2D p1_dir, Vector2D p2_dir)
-{
-	VDP_drawText( "1", fix32ToInt(p1.x), fix32ToInt(p1.y) );
-	VDP_drawText( "+", fix32ToInt(p1.x + p1_dir.x), fix32ToInt(p1.y - p1_dir.y) );
-
-	// VDP_drawText( "1", p1.x, p1.y );
-	VDP_drawText( "2", fix32ToInt(p2.x), fix32ToInt(p2.y) );
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////

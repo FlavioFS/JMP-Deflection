@@ -1,10 +1,16 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
+#include <genesis.h>
 #include "vector_utils.h"
+#include "sprite_definitions.h"
+#include "character_definitions.h"
 
-void renderPlayers	( Vector2D p1_pos, Vector2D p2_pos	 );
-void joyAtkHandler	( u16 joy, u16 joyChanged, u16 state );
-u8 directionalInput	( Vector2D * p1, Vector2D * p2 );
+// Character-specific behavior
+s16 knightDirectionalInput (Vector2D * player, u16 JOYPAD);
+s16 wizardDirectionalInput (Vector2D * player, u16 JOYPAD);
+
+// General purpose input handler
+s16 directionalInput ( Vector2D * player, CharacterSpeeds speeds, u16 JOYPAD );
 
 #endif

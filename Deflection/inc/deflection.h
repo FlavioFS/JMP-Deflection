@@ -1,6 +1,8 @@
 #define DEFAULT_SPEED_DIAG	FIX32(1)
 #define DEFAULT_SPEED 		FIX32(DEFAULT_SPEED_DIAG * 1.41)
 
+#include <genesis.h>
+
 typedef struct Vector2D
 {
 	fix32 x;

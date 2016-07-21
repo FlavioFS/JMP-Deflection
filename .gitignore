@@ -33,3 +33,6 @@
 # Project files
 *.sublime-project
 *.sublime-workspace
+*.cproject
+*.project
+*.settings

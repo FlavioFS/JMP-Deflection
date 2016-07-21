@@ -1,20 +1,20 @@
 #include <genesis.h>
 #include "arena.h"
-#include "tilesets/arena1_tileset.h"
+#include "gfx.h"
 
 void draw_obstacle(unsigned int x,unsigned int y, unsigned int w, unsigned int h);
 
 void load_tileset()
 {
 	// load the tiles
-	VDP_loadBMPTileData(tileset_arena_one.image,// the image itself
+	VDP_loadBMPTileData(tileset_arena.image,// the image itself
 						TILE_USERINDEX,   		// initial index for loaded tiles
-						tileset_arena_one.w/8,	// width of the tileset img
-						tileset_arena_one.h/8,	// height of tileset
-						tileset_arena_one.w/8);	// width in tiles it can differ (?)
+						tileset_arena.w/8,	// width of the tileset img
+						tileset_arena.h/8,	// height of tileset
+						tileset_arena.w/8);	// width in tiles it can differ (?)
 	
 	// load the tileset palette
-	VDP_setPalette (PAL3 ,tileset_arena_one.palette->data);
+	VDP_setPalette (PAL3 ,tileset_arena.palette->data);
 }
 
 void draw_arena()

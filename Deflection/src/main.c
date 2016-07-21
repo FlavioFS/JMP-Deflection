@@ -62,7 +62,7 @@ int main()
 		debugPlayers(p1, p2, p1_dir, p2_dir);
 
 		// control_wizard(&p1);
-		SPR_update(spr_players, 1);
+		SPR_update(spr_players, 2);
 
 		// wait for the screen to refresh
 		VDP_waitVSync();

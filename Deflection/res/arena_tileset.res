@@ -1,1 +1,0 @@
-BITMAP  tileset_arena_one  "arena1_tileset.png"  0

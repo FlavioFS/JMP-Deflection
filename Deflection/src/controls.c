@@ -1,8 +1,21 @@
 #include <genesis.h>
 #include "physics.h"
 
+void control_character(Character * playable_char, u16 joy_id);
+{
+	static const mask_directionals = (BUTTON_UP   |
+									  BUTTON_DOWN |
+									  BUTTON_LEFT |
+									  BUTTON_RIGHT);
+	
+	u16 joy_state = JOY_readJoypad(joy_id);
+	joy_state 	  = JOY_readJoypad(joy_id); // debounce
+	
+	move_character (playable_char, joy_state | mask_directionals);
+}
+
 /** Moves the characters on input in the (x,y) plane (velocity has a constant absolute value)
- */
+ 
 void directionalInput ( Vector2D * player, u16 JOY_NUMBER )
 {
 	// Player 1
@@ -61,3 +74,4 @@ void directionalInput ( Vector2D * player, u16 JOY_NUMBER )
 	// 	else if (value & BUTTON_DOWN)	p2->y += DEFAULT_SPEED;
 	// }
 }
+*/

@@ -1,15 +1,16 @@
 #include "wizard.h"
+#include "gfx.h"
 
-void init_player_wizard(int posx, int posy)
+Character * init_wizard_character()
 {
-	VDP_setPalette(PAL2, spr_knighty_def.palette->data);
+	Character * c =	init_character(&spr_wizard_res, intToFix32(1));
 	
-	SPR_initSprite(&WIZARD_SPR, &spr_wizard_def, 
-				   posx, posy,
-				   TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
-}
-
-void wizard_control(Vector2D * v, u16 JOY_NUMBER)
-{
-	directionalInput(v, JOY_NUMBER);
+	c->anim_iddle_id 	  = 0;
+	c->anim_move_up_id 	  = 0;
+	c->anim_move_down_id  = 0;
+	c->anim_move_right_id = 0;
+	
+	SPR_setAnim(s->sprite, c->anim_iddle_id);
+	
+	return c;
 }

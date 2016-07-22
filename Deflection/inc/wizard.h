@@ -2,12 +2,8 @@
 #define WIZARD_H
 
 #include <genesis.h>
-#include "gfx.h"
-#include "controls.h"
+#include "character.h"
 
-Sprite WIZARD_SPR;
-
-void init_player_wizard(int, int);
-void wizard_control(Vector2D * v, u16 JOY_NUMBER);
+Character * init_wizard_character();
 
 #endif

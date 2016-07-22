@@ -1,7 +1,8 @@
 #include <genesis.h>
 #include "physics.h"
+#include "controls.h"
 
-void control_character(Character * playable_char, u16 joy_id);
+void control_character(Character * c, u16 joy_id)
 {
 	static const mask_directionals = (BUTTON_UP   |
 									  BUTTON_DOWN |
@@ -11,7 +12,7 @@ void control_character(Character * playable_char, u16 joy_id);
 	u16 joy_state = JOY_readJoypad(joy_id);
 	joy_state 	  = JOY_readJoypad(joy_id); // debounce
 	
-	move_character (playable_char, joy_state | mask_directionals);
+	move_character (c, joy_state | mask_directionals);
 }
 
 /** Moves the characters on input in the (x,y) plane (velocity has a constant absolute value)

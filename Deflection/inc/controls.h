@@ -8,6 +8,6 @@
 //void joyAtkHandler		( u16 joy, u16 joyChanged, u16 state );
 //void directionalInput	( Vector2D * p1, Vector2D * p2 );
 
-void control_character(Character & playable_char, u16 joy_id);
+void control_character(Character * c, u16 joy_id);
 
 #endif

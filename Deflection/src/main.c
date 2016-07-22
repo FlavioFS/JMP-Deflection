@@ -7,12 +7,13 @@
 #include "arena.h"
 #include "controls.h"
 #include "character.h"
+#include "gfx.h"
 
 
 int main()
 {
 	VDP_setScreenWidth320();
-	SPR_init();
+	SPR_init(0);
 
 	// playable characters
 	Character * player_one = init_wizard_character();
@@ -46,95 +47,3 @@ int main()
 
 	return 0;
 }
-
-// We need to discuss this later!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-/* Handlers... WHY?!
- * GOTTA FIND A MODULAR SOLUTION!!
- */
- void joyAtkHandler ( u16 joy, u16 joyChanged, u16 state )
-{
-	int xc = fix32ToInt(p1.x);
-	int yc = fix32ToInt(p1.y);
-
-	// Player 1
-	if (joy == JOY_1)
-	{
-		if ( (state & BUTTON_A) || (state & BUTTON_B) || (state & BUTTON_C) )
-		// if (state & BUTTON_B )
-		{
-			if (p1_dir.y != 0)
-			{
-				VDP_drawText( "XXX", xc - 1, fix32ToInt(p1.y - p1_dir.y) );
-				VDP_drawText( "XXX", xc - 1, fix32ToInt(p1.y - 2*p1_dir.y) );
-			}
-			else if (p1_dir.x != 0)
-			{
-				VDP_drawText( "XX", fix32ToInt(p1.x + 2*p1_dir.x), yc - 1 );
-				VDP_drawText( "XX", fix32ToInt(p1.x + 2*p1_dir.x), yc     );
-				VDP_drawText( "XX", fix32ToInt(p1.x + 2*p1_dir.x), yc + 1 );
-			}
-		}
-		
-		VDP_setTileMapXY( VDP_PLAN_A, 0, xc, yc );
-		VDP_setTileMapXY( VDP_PLAN_A, 0, fix32ToInt(p1.x + p1_dir.x), fix32ToInt(p1.y - p1_dir.y) );
-	}
-}
-
-// Old
-/*
-void joyMoveHandler ( u16 joy, u16 joyChanged, u16 state ) {
-	// Player 1
-	if (joy == JOY_1)
-	{
-		if (state & BUTTON_START)		// Press
-		{
-
-		}
-		else if (joyChanged & BUTTON_START)	// Release
-		{
-
-		}
-
-
-		if (state & BUTTON_UP)
-		{
-			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
-			if (p1.y >= 1) p1.y -= 1;
-		}
-		else if (state & BUTTON_DOWN)
-		{
-			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
-			if (p1.y < 27) p1.y += 1;
-		}
-
-
-		if (state & BUTTON_LEFT)
-		{
-			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
-			if (p1.x >= 1) p1.x -= 1;
-		}
-		else if (state & BUTTON_RIGHT)
-		{
-			VDP_setTileMapXY( VDP_PLAN_A, 0, p1.x, p1.y );
-			if (p1.x < 39) p1.x += 1;
-		}
-
-		else if (state & BUTTON_START)	// Press start
-		{
-
-		}
-		else if (state & BUTTON_START)	// Release start
-		{
-
-		}
-
-		// int dbg_pos[] = { 10, 20 };
-		// VDP_drawText( state, dbg_pos[0], dbg_pos[1] );
-	}
-
-	// Player 2
-	// else if (joy == JOY_1B)
-	// {
-	// }
-}
-*/

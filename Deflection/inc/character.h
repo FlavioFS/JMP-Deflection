@@ -28,7 +28,7 @@ void update_character_onscreen(Character * c);
 
 void control_character_movement(Character * c, u16 dir_input);
 
-void set_character_position(Character * c, fix32 x, fix32 y);
+void set_character_position(Character * c, int x, int y);
 
 void set_character_palette(Character * c, u16 pal);
 

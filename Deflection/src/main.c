@@ -35,9 +35,11 @@ int main()
 	// game loop
 	while (1)
 	{
-		control_character (player_one, JOY_1);
+		//control_character (player_one, JOY_1);
 		
 		update_character_onscreen(player_one);
+		
+		//SPR_update(player_one->sprite, 1);
 		
 		// wait for the screen to refresh
 		VDP_waitVSync();

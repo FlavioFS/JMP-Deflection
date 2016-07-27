@@ -10,18 +10,19 @@
 #ifndef CHARACTER_DEFINITIONS_H
 #define CHARACTER_DEFINITIONS_H
 
-#include "player_definitions.h"
+#include "player.h"
 
 #define SQRT_2	FIX32(1.41)
 #define DIAG(x) FIX32(x / SQRT_2)
 
-typedef struct CharacterSpeeds {
+typedef struct
+{
 	fix32 straightSpeed;
 	fix32 diagonalSpeed;
 } CharacterSpeeds;
 
 // Knighty
-#define SPD_KNIGHTY (CharacterSpeeds) { FIX32(1.2), DIAG(1.2) }
+#define KNIGHTY (Character) { FIX32(1.2), DIAG(1.2) }
 /*
 	Base HP (chances)
 	Attack duration
@@ -31,7 +32,7 @@ typedef struct CharacterSpeeds {
 
 
 // Wizard
-#define SPD_WIZARD  (CharacterSpeeds) { FIX32(1.2), DIAG(1.2) }
+#define WIZARD  (Character) { FIX32(1.2), DIAG(1.2) }
 /*
 	Base HP (chances)
 	Attack duration

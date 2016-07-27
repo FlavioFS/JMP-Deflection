@@ -5,7 +5,7 @@
 	TODO: Replace "VDP_drawText" with "SPR_setPosition"
 	SPR_setPosition(&sprites[0], fix32ToInt(posx), fix32ToInt(posy));
 ////////////////////////////////////////////////////////////////////////////////////////////////////*/
-void bounceCharacter( Vector2D * speed, Vector2D * position )
+void bounceCharacter( Player * speed, Player * position )
 {
 	// 1) hack to clear old position
 	VDP_setTileMapXY( VDP_PLAN_A, 0, fix32ToInt(position->x), fix32ToInt(position->y) );

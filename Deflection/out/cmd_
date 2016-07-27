@@ -1,1 +1,1 @@
-out/res/gfx.o out/src/arena.o out/src/controls.o out/src/knighty.o out/src/main.o out/src/physics.o out/src/vector_utils.o out/src/wizard.o
+out/res/gfx.o out/src/arena.o out/src/controls.o out/src/main.o out/src/physics.o out/src/players.o out/src/vector_utils.o

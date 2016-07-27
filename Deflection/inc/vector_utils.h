@@ -3,7 +3,7 @@
 
 #include <genesis.h>
 
-typedef struct Vector2D
+typedef struct
 {
 	fix32 x;
 	fix32 y;

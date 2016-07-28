@@ -16,6 +16,7 @@ typedef struct struct_character
 	u16 pal_index;
 	
 	u16 anim_iddle_id;
+	u16 anim_move_left_id;
 	u16 anim_move_right_id;
 	u16 anim_move_up_id;
 	u16 anim_move_down_id;
@@ -31,5 +32,7 @@ void control_character_movement(Character * c, u16 dir_input);
 void set_character_position(Character * c, int x, int y);
 
 void set_character_palette(Character * c, u16 pal);
+
+void move_character (Character * c, u16 dir_input);
 
 #endif

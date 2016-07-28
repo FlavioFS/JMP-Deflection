@@ -35,7 +35,7 @@ int main()
 	// game loop
 	while (1)
 	{
-		//control_character (player_one, JOY_1);
+		control_character (player_one, JOY_1);
 		
 		update_character_onscreen(player_one);
 		

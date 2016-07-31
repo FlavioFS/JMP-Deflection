@@ -8,15 +8,56 @@ void control_character(Character * c, u16 joy_id)
 									  BUTTON_DOWN |
 									  BUTTON_LEFT |
 									  BUTTON_RIGHT);
-	
+
 	u16 joy_state = JOY_readJoypad(joy_id);
 	joy_state 	  = JOY_readJoypad(joy_id); // debounce
-	
-	move_character (c, joy_state | mask_directionals);
+
+	u16 dir_input = joy_state & mask_directionals;
+
+	if (dir_input & (BUTTON_LEFT | BUTTON_RIGHT) && dir_input & (BUTTON_DOWN | BUTTON_UP))
+	{
+		if (dir_input & BUTTON_LEFT)
+		{
+			c->position.x = fix32Sub(c->position.x, c->diag_move_spd);
+		}
+		else if (dir_input & BUTTON_RIGHT)
+		{
+			c->position.x = fix32Add(c->diag_move_spd, c->position.x);
+		}
+
+		if (dir_input & BUTTON_UP)
+		{
+			c->position.y = fix32Sub(c->position.y, c->diag_move_spd);
+		}
+		else if (dir_input & BUTTON_DOWN)
+		{
+			c->position.y = fix32Add(c->position.y, c->diag_move_spd);
+		}
+	}
+	else
+	{
+		if (dir_input & BUTTON_LEFT)
+		{
+			c->position.x = fix32Sub(c->position.x, c->lin_move_spd);
+		}
+		else if (dir_input & BUTTON_RIGHT)
+		{
+			c->position.x = fix32Add(c->lin_move_spd, c->position.x);
+		}
+
+		else if (dir_input & BUTTON_UP)
+		{
+			c->position.y = fix32Sub(c->position.y, c->lin_move_spd);
+		}
+		else if (dir_input & BUTTON_DOWN)
+		{
+			c->position.y = fix32Add(c->position.y, c->lin_move_spd);
+		}
+	}
 }
 
 /** Moves the characters on input in the (x,y) plane (velocity has a constant absolute value)
- 
+
 void directionalInput ( Vector2D * player, u16 JOY_NUMBER )
 {
 	// Player 1
@@ -47,7 +88,7 @@ void directionalInput ( Vector2D * player, u16 JOY_NUMBER )
 	}
 
 	// // ---------------------------------------------------------------------
-	
+
 	// // Player 2
 	// value = JOY_readJoypad(JOY_2);
 

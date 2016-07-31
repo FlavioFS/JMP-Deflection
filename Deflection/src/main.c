@@ -1,5 +1,5 @@
-// main file: 
-// @author: Lucas Falcão @mail: <not@for.your.eyes> =P
+// main file:
+// @author: Lucas Falcï¿½o @mail: <not@for.your.eyes> =P
 // @author: Flavio Freitas @mail: <flaviofreitas.h@gmail.com>
 
 #include <genesis.h>
@@ -17,34 +17,35 @@ int main()
 
 	// playable characters
 	Character * player_one = init_wizard_character();
-	
+
 	set_character_position (player_one, P1_START_X, P2_START_Y);
-	
+
 	VDP_setPalette(PAL1, spr_wizard_def.palette->data);
 
 	set_character_palette(player_one, PAL1);
 
 	// Init joy handler
 	JOY_init();
-	
+
 
 	// Under construction
 	draw_arena();
 
-	
+
 	// game loop
 	while (1)
 	{
-		//control_character (player_one, JOY_1);
-		
+
+		control_character (player_one, JOY_1);
+
 		update_character_onscreen(player_one);
-		
+
 		//SPR_update(player_one->sprite, 1);
-		
+
 		// wait for the screen to refresh
 		VDP_waitVSync();
 	}
-	
+
 	SPR_end();
 
 	return 0;

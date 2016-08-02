@@ -73,7 +73,7 @@ void move_character (Character * c, u16 dir_input)
 	// Idle
 	if (dir_input == 0)
 	{
-		SPR_setAnim(c->sprite, c->anim_iddle_id);
+		SPR_setAnim(c->sprite, c->anim_idle_right_id);
 		return;
 	}
 

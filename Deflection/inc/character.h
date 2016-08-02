@@ -15,11 +15,25 @@ typedef struct struct_character
 
 	u16 pal_index;
 
-	u16 anim_iddle_id;
-	u16 anim_move_left_id;
-	u16 anim_move_right_id;
+	u16 anim_idle_up_id;
+	u16 anim_idle_down_id;
+	u16 anim_idle_left_id;
+	u16 anim_idle_right_id;
+
 	u16 anim_move_up_id;
 	u16 anim_move_down_id;
+	u16 anim_move_left_id;
+	u16 anim_move_right_id;
+
+	u16 anim_atk_up_id;
+	u16 anim_atk_down_id;
+	u16 anim_atk_left_id;
+	u16 anim_atk_right_id;
+
+	u16 anim_faint_up_id;
+	u16 anim_faint_down_id;
+	u16 anim_faint_left_id;
+	u16 anim_faint_right_id;
 
 } Character;
 

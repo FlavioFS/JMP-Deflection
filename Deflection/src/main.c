@@ -16,11 +16,11 @@ int main()
 	SPR_init(0);
 
 	// playable characters
-	Character * player_one = init_wizard_character();
+	Character * player_one = init_knight_character();
 
 	set_character_position (player_one, P1_START_X, P2_START_Y);
 
-	VDP_setPalette(PAL1, spr_wizard_def.palette->data);
+	VDP_setPalette(PAL1, spr_knight_def.palette->data);
 
 	set_character_palette(player_one, PAL1);
 
@@ -35,14 +35,7 @@ int main()
 	// game loop
 	while (1)
 	{
-<<<<<<< HEAD
-
 		control_character (player_one, JOY_1);
-
-=======
-		control_character (player_one, JOY_1);
-		
->>>>>>> d9b78ad0b1acbeb715d5674aaa2bf15ab7f4c6a4
 		update_character_onscreen(player_one);
 
 		//SPR_update(player_one->sprite, 1);

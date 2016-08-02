@@ -11,7 +11,6 @@ void control_character(Character * c, u16 joy_id)
 
 	u16 joy_state = JOY_readJoypad(joy_id);
 	joy_state 	  = JOY_readJoypad(joy_id); // debounce
-<<<<<<< HEAD
 
 	u16 dir_input = joy_state & mask_directionals;
 

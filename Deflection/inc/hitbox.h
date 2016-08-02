@@ -9,10 +9,14 @@ typedef struct hitbox
     fix32    w, h;
 } Hitbox;
 
-Hitbox * new_hitbox (Vector2D pos, fix32 w, fix32 h);
+Hitbox * hitbox_new (Vector2D pos, fix32 w, fix32 h);
 
-u16 detect_collision(Hitbox * a, Hitbox * b);
+u16 hitbox_detect_collision (Hitbox * a, Hitbox * b);
 
-void set_hitbox_position(Hitbox * hb, Vector2D new_pos);
+void hitbox_set_position (Hitbox * hb, Vector2D new_pos);
+
+void hitbox_translate (Hitbox * hb, fix32 x, fix32 y);
+
+void draw_hitbox(Hitbox * hb, u16 pal);
 
 #endif

@@ -15,6 +15,8 @@ typedef struct struct_character
 
 	u16 pal_index;
 
+	u16 anim_idle_last_direction_id;
+
 	u16 anim_idle_up_id;
 	u16 anim_idle_down_id;
 	u16 anim_idle_left_id;

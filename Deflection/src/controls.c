@@ -32,12 +32,12 @@ void control_character(Character * c, u16 joy_id)
 		if (dir_input & BUTTON_UP)
 		{
 			c->position.y = fix32Sub(c->position.y, c->diag_move_spd);
-			SPR_setAnim(c->sprite, c->anim_atk_left_id);
+			SPR_setAnim(c->sprite, c->anim_move_left_id);
 		}
 		else if (dir_input & BUTTON_DOWN)
 		{
 			c->position.y = fix32Add(c->position.y, c->diag_move_spd);
-			SPR_setAnim(c->sprite, c->anim_atk_right_id);
+			SPR_setAnim(c->sprite, c->anim_move_right_id);
 		}
 	}
 	else

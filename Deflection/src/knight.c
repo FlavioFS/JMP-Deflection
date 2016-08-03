@@ -3,7 +3,7 @@
 
 Character * init_knight_character()
 {
-	Character * c =	init_character(&spr_knight_def, intToFix32(1));
+	Character * c =	init_character(&spr_knight_def, FIX32(0.8));
 
 	c->anim_idle_up_id    = 0;
 	c->anim_idle_down_id  = 0;

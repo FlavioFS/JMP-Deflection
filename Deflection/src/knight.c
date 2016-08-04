@@ -10,15 +10,15 @@ Character * init_knight_character()
 	c->anim_idle_left_id  = 2;
 	c->anim_idle_right_id = 3;
 
-	c->anim_move_up_id     = 0;
-	c->anim_move_down_id   = 0;
-	c->anim_move_left_id   = 4;
-	c->anim_move_right_id  = 5;
+	c->anim_move_up_id     = 4;
+	c->anim_move_down_id   = 5;
+	c->anim_move_left_id   = 6;
+	c->anim_move_right_id  = 7;
 
 	c->anim_atk_up_id      = 0;
 	c->anim_atk_down_id    = 0;
-	c->anim_atk_left_id    = 6;
-	c->anim_atk_right_id   = 7;
+	c->anim_atk_left_id    = 8;
+	c->anim_atk_right_id   = 9;
 	
 	c->anim_faint_up_id    = 0;
 	c->anim_faint_down_id  = 0;

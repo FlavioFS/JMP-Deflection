@@ -13,6 +13,7 @@
 void joyNonDirectional ( u16 joy, u16 changed, u16 state );
 
 Character * player_one;
+static u32 lastTick;
 
 int main()
 {
@@ -28,9 +29,10 @@ int main()
 
 	set_character_palette(player_one, PAL1);
 
+	lastTick = getTick();
+
 	// Init joy handler
 	JOY_init();
-
 
 	// Under construction
 	draw_arena();
@@ -69,9 +71,10 @@ void joyNonDirectional ( u16 joy, u16 changed, u16 state )
 		{
 			if ( state & ( BUTTON_A | BUTTON_B | BUTTON_C ) )
 			{
-
 				// Already attacking
-				if (player_one->sprite->animInd == 8 || player_one->sprite->animInd == 9 ) return;
+				if (getTick() - lastTick < player_one->atk_cooldown) return;
+				lastTick = getTick();
+				// if (player_one->sprite->animInd == 8 || player_one->sprite->animInd == 9 ) return;
 
 				if (player_one->anim_idle_last_direction_id == player_one->anim_idle_up_id)
 				{

@@ -18,7 +18,8 @@ Character * init_character (const SpriteDefinition * spr_def, fix32 mov_spd)
 
 	c->lin_move_spd  = fix32Mul(mov_spd, FIX32(1.41));
 
-	c->anim_idle_last_direction_id = c->anim_idle_right_id;
+	c->anim_idle_last_direction_id = c->anim_idle_down_id;
+	SPR_setAnim(c->sprite, c->anim_idle_down_id);
 
 	return c;
 }

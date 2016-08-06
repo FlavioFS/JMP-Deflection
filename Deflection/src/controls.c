@@ -8,11 +8,19 @@ void control_character(Character * c, u16 joy_id)
 									  BUTTON_DOWN |
 									  BUTTON_LEFT |
 									  BUTTON_RIGHT);
+	
+	static const ANIM_ATK_LENGTH = 3;
 
 	u16 joy_state = JOY_readJoypad(joy_id);
 	joy_state 	  = JOY_readJoypad(joy_id); // debounce
 
 	u16 dir_input = joy_state & mask_directionals;
+
+	if (c->sprite->animInd == c->anim_atk_left_id || c->sprite->animInd == c->anim_atk_right_id )
+	{
+		
+		if (c->sprite->frameInd < ANIM_ATK_LENGTH) return;
+	}
 
 	if (dir_input == 0) {
 		SPR_setAnim(c->sprite, c->anim_idle_last_direction_id);

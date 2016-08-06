@@ -26,6 +26,7 @@ Character * init_knight_character()
 	c->anim_faint_right_id = 0;
 
 
+	c->anim_idle_last_direction_id = c->anim_idle_right_id;
 	SPR_setAnim(c->sprite, c->anim_idle_right_id);
 
 	return c;

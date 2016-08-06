@@ -8,13 +8,12 @@ Character * init_character (const SpriteDefinition * spr_def, fix32 mov_spd)
 
 	c->pal_index = PAL2;
 
-	SPR_initSprite(c->sprite, spr_def, 0, 0,
-				   TILE_ATTR(c->pal_index, 1, 0, 0));
+	SPR_initSprite(c->sprite, spr_def, 0, 0, TILE_ATTR(c->pal_index, 1, 0, 0));
 
 	c->position.x = FIX32(0.0);
 	c->position.y = FIX32(0.0);
 
-	c->atk_cooldown = 300; // Default value: 1s (getTick() uses 1/300s as unit)
+	c->atk_cooldown = 200; // Default value: 1s (getTick() uses 1/300s as unit)
 
 	c->diag_move_spd = mov_spd;
 	c->lin_move_spd  = fix32Mul(mov_spd, FIX32(1.41));
@@ -41,8 +40,7 @@ void set_character_position(Character * c, int x, int y)
 
 void set_character_palette(Character * c, u16 pal)
 {
-	SPR_setAttribut(c->sprite,
-				  TILE_ATTR(pal, 0, 0, 0));
+	SPR_setAttribut(c->sprite, TILE_ATTR(pal, 0, 0, 0));
 }
 
 
@@ -75,11 +73,11 @@ void move_character (Character * c, u16 dir_input)
 	// ---------------------------------------------------------
 
 	// Idle
-	if (dir_input == 0)
-	{
-		SPR_setAnim(c->sprite, c->anim_idle_right_id);
-		return;
-	}
+	// if (dir_input == 0)
+	// {
+	// 	SPR_setAnim(c->sprite, c->anim_idle_right_id);
+	// 	return;
+	// }
 
 	// Diagonal movement
 	/**
@@ -95,52 +93,52 @@ void move_character (Character * c, u16 dir_input)
 	 * So the "if" statement below is:
 	 *  (X Y Z W) & (
 	 */
-	if ( (dir_input & (BUTTON_UP | BUTTON_DOWN)) && (dir_input & (BUTTON_LEFT | BUTTON_RIGHT)) )
-	{
-		if (dir_input & BUTTON_LEFT)
-		{
-			c->position.x = fix32Sub(c->position.x, c->diag_move_spd);
-			SPR_setAnim(c->sprite, c->anim_move_left_id);
-		}
-		else if (dir_input & BUTTON_RIGHT)
-		{
-			c->position.x = fix32Add(c->position.x, c->diag_move_spd);
-			SPR_setAnim(c->sprite, c->anim_move_right_id);
-		}
+	// if ( (dir_input & (BUTTON_UP | BUTTON_DOWN)) && (dir_input & (BUTTON_LEFT | BUTTON_RIGHT)) )
+	// {
+	// 	if (dir_input & BUTTON_LEFT)
+	// 	{
+	// 		c->position.x = fix32Sub(c->position.x, c->diag_move_spd);
+	// 		SPR_setAnim(c->sprite, c->anim_move_left_id);
+	// 	}
+	// 	else if (dir_input & BUTTON_RIGHT)
+	// 	{
+	// 		c->position.x = fix32Add(c->position.x, c->diag_move_spd);
+	// 		SPR_setAnim(c->sprite, c->anim_move_right_id);
+	// 	}
 
-		if (dir_input & BUTTON_UP)
-		{
-			c->position.y = fix32Sub(c->position.y, c->diag_move_spd);
-		}
-		else if (dir_input & BUTTON_DOWN)
-		{
-			c->position.y = fix32Add(c->position.y, c->diag_move_spd);
-		}
-	}
+	// 	if (dir_input & BUTTON_UP)
+	// 	{
+	// 		c->position.y = fix32Sub(c->position.y, c->diag_move_spd);
+	// 	}
+	// 	else if (dir_input & BUTTON_DOWN)
+	// 	{
+	// 		c->position.y = fix32Add(c->position.y, c->diag_move_spd);
+	// 	}
+	// }
 
-	// Straight movement
-	else
-	{
-		if (dir_input & BUTTON_LEFT)
-		{
-			c->position.x = fix32Sub(c->position.x, c->lin_move_spd);
-			SPR_setAnim(c->sprite, c->anim_move_left_id);
-		}
-		else if (dir_input & BUTTON_RIGHT)
-		{
-			c->position.x = fix32Add(c->position.x, c->lin_move_spd);
-			SPR_setAnim(c->sprite, c->anim_move_right_id);
-		}
+	// // Straight movement
+	// else
+	// {
+	// 	if (dir_input & BUTTON_LEFT)
+	// 	{
+	// 		c->position.x = fix32Sub(c->position.x, c->lin_move_spd);
+	// 		SPR_setAnim(c->sprite, c->anim_move_left_id);
+	// 	}
+	// 	else if (dir_input & BUTTON_RIGHT)
+	// 	{
+	// 		c->position.x = fix32Add(c->position.x, c->lin_move_spd);
+	// 		SPR_setAnim(c->sprite, c->anim_move_right_id);
+	// 	}
 
-		if (dir_input & BUTTON_UP)
-		{
-			c->position.y = fix32Sub(c->position.y, c->lin_move_spd);
-			SPR_setAnim(c->sprite, c->anim_move_up_id);
-		}
-		else if (dir_input & BUTTON_DOWN)
-		{
-			c->position.y = fix32Add(c->position.y, c->lin_move_spd);
-			SPR_setAnim(c->sprite, c->anim_move_down_id);
-		}
-	}
+	// 	if (dir_input & BUTTON_UP)
+	// 	{
+	// 		c->position.y = fix32Sub(c->position.y, c->lin_move_spd);
+	// 		SPR_setAnim(c->sprite, c->anim_move_up_id);
+	// 	}
+	// 	else if (dir_input & BUTTON_DOWN)
+	// 	{
+	// 		c->position.y = fix32Add(c->position.y, c->lin_move_spd);
+	// 		SPR_setAnim(c->sprite, c->anim_move_down_id);
+	// 	}
+	// }
 }

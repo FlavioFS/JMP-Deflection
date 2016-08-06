@@ -23,7 +23,7 @@ int main()
 	// playable characters
 	player_one = init_knight_character();
 
-	set_character_position (player_one, P1_START_X, P2_START_Y);
+	set_character_position (player_one, P1_START_X, P1_START_Y);
 
 	VDP_setPalette(PAL1, spr_knight_def.palette->data);
 

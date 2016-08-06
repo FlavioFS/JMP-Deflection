@@ -4,12 +4,12 @@
 
 void control_character(Character * c, u16 joy_id)
 {
-	static const mask_directionals = (BUTTON_UP   |
+	static const u16 mask_directionals = (BUTTON_UP   |
 									  BUTTON_DOWN |
 									  BUTTON_LEFT |
 									  BUTTON_RIGHT);
 	
-	static const ANIM_ATK_LENGTH = 3;
+	static const int ANIM_ATK_LENGTH = 3;
 
 	u16 joy_state = JOY_readJoypad(joy_id);
 	joy_state 	  = JOY_readJoypad(joy_id); // debounce

@@ -37,6 +37,8 @@ typedef struct struct_character
 	u16 anim_faint_left_id;
 	u16 anim_faint_right_id;
 
+	u32 atk_cooldown;
+
 } Character;
 
 Character * init_character (const SpriteDefinition * spr_def, fix32 mov_spd);

@@ -33,3 +33,6 @@
 # Project files
 *.sublime-project
 *.sublime-workspace
+
+# Visual Studio Code
+Deflection/.vscode/

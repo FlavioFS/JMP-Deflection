@@ -1,10 +1,10 @@
 #include "debug_tile.h"
 #include "gfx.h"
 
-Character * init_debug_tile_character(fix32 mov_speed)
+Character * init_debug_tile_character()
 {
-	Character * c =	init_character(&spr_debug_tile_def, mov_speed);
-	
+	Character * c =	init_character(&spr_debug_tile_def, FIX32(0.8));
+
 	c->anim_idle_up_id    = 0;
 	c->anim_idle_down_id  = 1;
 	c->anim_idle_left_id  = 2;

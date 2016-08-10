@@ -20,6 +20,7 @@ extern u8 next_screen;
 //// Methods
 void set_next_screen (u8 screen_code);	// [1]
 void current_screen();					// [2]
+void menu_cooldown(u8 multiplier);      // [4]
 
 // Screen list
 void main_screen();						// [3]

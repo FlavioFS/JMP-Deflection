@@ -47,6 +47,23 @@ void current_screen()
 		credits_screen();
 		break;
 	}
+
+	VDP_fadeOutAll(20, FALSE);
+}
+
+
+// [4]
+void menu_cooldown (u8 multiplier)
+{
+	u32 lastTick = getTick();
+
+	do
+	{
+		// Screen change cooldown
+		VDP_waitVSync();
+	} while (getTick() - lastTick < MENU_COOLDOWN * multiplier);
+
+	JOY_waitPressBtn();
 }
 
 
@@ -57,8 +74,8 @@ void main_screen ()
 	s8 choice = 0;
 	u16 VALID_DIRECTION = BUTTON_UP | BUTTON_DOWN;
 
-	u8 pos_x = 15;
-	u8 pos_y[3] = { 5, 7, 9 };	// "Play", "Options", "Credits"
+	u8 pos_x = 16;
+	u8 pos_y[3] = { 18, 20, 22 };	// "Play", "Options", "Credits"
 
 	// Cooldowns
 	u32 now = getTick();
@@ -67,13 +84,27 @@ void main_screen ()
 	u16 joypads[PLAYER_COUNT];
 	int i = 0;					// Never declare variables inside of loops
 
+	// Draws menu (first time)
+	VDP_drawText("Play"   , pos_x    , pos_y[0]);
+	VDP_drawText("Options", pos_x    , pos_y[1]);
+	VDP_drawText("Credits", pos_x    , pos_y[2]);
+	VDP_drawText("->"     , pos_x - 3, pos_y[choice]);
+
+	// Fade in
+	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
+//	u16 palette[64];
+//	memcpy(&palette[ 0],    bgb_image.palette->data, 16 * 2);
+//	memcpy(&palette[16],    bga_image.palette->data, 16 * 2);
+//	memcpy(&palette[32], sonic_sprite.palette->data, 16 * 2);
+
+	// D
 	do
 	{
 		// Draws menu
-		VDP_drawText("Play", pos_x, pos_y[0]);
-		VDP_drawText("Options", pos_x, pos_y[1]);
-		VDP_drawText("Credits", pos_x, pos_y[2]);
-		VDP_drawText("->", pos_x - 2, pos_y[choice]);
+		VDP_drawText("Play"   , pos_x    , pos_y[0]);
+		VDP_drawText("Options", pos_x    , pos_y[1]);
+		VDP_drawText("Credits", pos_x    , pos_y[2]);
+		VDP_drawText("->"     , pos_x - 3, pos_y[choice]);
 
 		// Player inputs
 		joypads[P1_CODE] = JOY_readJoypad(JOY_1);
@@ -86,7 +117,7 @@ void main_screen ()
 				if (joypads[i] & VALID_DIRECTION)
 				{
 					lastTick = now;
-					VDP_drawText("  ", pos_x - 2, pos_y[choice]); // Clears old arrow
+					VDP_drawText("  ", pos_x - 3, pos_y[choice]); // Clears old arrow
 
 					// UP or DOWN
 					if (joypads[i] & BUTTON_UP) choice--;
@@ -121,7 +152,7 @@ void character_selection_screen()
 	u16 joypads[PLAYER_COUNT];
 
 	// Anti-spam 
-	s16 VALID_INPUT = BUTTON_LEFT | BUTTON_RIGHT | BUTTON_A | BUTTON_B;
+	s16 VALID_INPUT = BUTTON_LEFT | BUTTON_RIGHT | BUTTON_A | BUTTON_C;
 	u32 now = getTick();
 	u32 lastTicks[PLAYER_COUNT] = { now, now };
 
@@ -136,10 +167,11 @@ void character_selection_screen()
 
 	// Splash arts
 	VDP_clearPlan(VDP_PLAN_B, FALSE);
-	VDP_setPalette(PAL1, roster1.palette->data);
-	VDP_drawImageEx(BPLAN, &roster1, TILE_ATTR_FULL(PAL1, FALSE, FALSE, FALSE, TILE_USERINDEX),  3, 5, FALSE, TRUE);
-	VDP_setPalette(PAL2, roster3.palette->data);
-	VDP_drawImageEx(BPLAN, &roster3, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, TILE_USERINDEX), 30, 5, FALSE, TRUE);
+//	VDP_setPalette(PAL0, roster1.palette->data);
+	VDP_drawBitmapEx(BPLAN, &roster1, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ),  3, 5, FALSE);
+	VDP_drawBitmapEx(BPLAN, &roster2, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144), 12, 5, FALSE);
+	VDP_drawBitmapEx(BPLAN, &roster3, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+272), 21, 5, FALSE);
+	VDP_drawBitmapEx(BPLAN, &roster4, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+400), 30, 5, FALSE);
 
 	// Cursors as sprites
 	Sprite choice_spr[2];
@@ -153,6 +185,9 @@ void character_selection_screen()
 	choice_spr[P2_CODE].x = pos_x[P2_CODE][choices[P2_CODE]];
 	choice_spr[P2_CODE].y = pos_y;
 	SPR_update(choice_spr, 2);
+
+	// Fade In
+	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
 
 	// Selection loop (until both are ready)
 	do
@@ -172,6 +207,7 @@ void character_selection_screen()
 				{
 					if (joypads[i] & BUTTON_B)
 					{
+						lastTicks[i] = getTick(); // Cooldown
 						ready[i] = FALSE;
 						choice_spr[i].y = pos_y;
 						changed = TRUE;
@@ -198,7 +234,7 @@ void character_selection_screen()
 						}
 
 						// Back to main screen
-						else if (joypads[i] & BUTTON_B)
+						else if (joypads[i] & BUTTON_C)
 						{
 							set_next_screen(MAIN_SCREEN);
 							success = FALSE;
@@ -253,7 +289,7 @@ void game_screen ()
 //
 //	Sprite sprite_list [2];
 //
-//	VDP_setPalette(PAL1, character_sprites[p1.char_code].palette->data);
+//	VDP_setPalette(PAL0, character_sprites[p1.char_code].palette->data);
 //	VDP_setPalette(PAL2, character_sprites[p2.char_code].palette->data);
 //
 //	SPR_initSprite(&sprite_list[0], &character_sprites[p1.char_code], 220, 220, TILE_ATTR(PAL1, 1, 0, 0));
@@ -268,16 +304,9 @@ void options_screen ()
 	u8 pos_y = 10;
 
 	VDP_drawText("     Options will be available here     ", pos_x, pos_y);
+	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
 
-	u32 lastTick = getTick();
-	do
-	{
-		// Screen change cooldown
-		VDP_waitVSync();
-	} while (getTick() - lastTick < MENU_COOLDOWN * 4);
-
-	JOY_waitPressBtn();
-
+	menu_cooldown(4);
 	set_next_screen(MAIN_SCREEN);
 }
 
@@ -288,7 +317,7 @@ void credits_screen ()
 	u8 pos_x = 0;
 	u8 pos_y = 2;
 
-	VDP_drawText(" ----- Deflection (2016, Jun-Aug) ----- ", pos_x, pos_y);
+	VDP_drawText(" ----- Deflection (2016, Jun-Aug) ----- ", pos_x, pos_y  );
 	VDP_drawText("  This is the final project of a subject", pos_x, pos_y+2);
 	VDP_drawText("from Universidade Federal do Ceara (UFC)", pos_x, pos_y+3);
 	VDP_drawText("         Brazil, CE, Fortaleza          ", pos_x, pos_y+4);
@@ -297,25 +326,23 @@ void credits_screen ()
 	VDP_drawText("     https://github.com/                ", pos_x, pos_y+7);
 	VDP_drawText("            FlavioFS/JMP-Deflection     ", pos_x, pos_y+8);
 
-	VDP_drawText("    ----- Programming and Art -----     ", pos_x, pos_y+11);
-	VDP_drawText("       * Flavio Freitas de Sousa        ", pos_x, pos_y+13);
-	VDP_drawText("         (flaviofreitas.h@gmail.com)    ", pos_x, pos_y+14);
-	VDP_drawText("          + Knight character            ", pos_x, pos_y+15);
-	VDP_drawText("          + Splash arts                 ", pos_x, pos_y+16);
+	VDP_drawText("     Professor Advisor: Gilvan Maia     ", pos_x, pos_y+10);
+	VDP_drawText(" Department of Systems and Digital Media", pos_x, pos_y+11);
 
-	VDP_drawText("       * Lucas Falcao                   ", pos_x, pos_y+18);
+	VDP_drawText("    ----- Programming and Art -----     ", pos_x, pos_y+14);
+	VDP_drawText("     Department of Computer Science     ", pos_x, pos_y+16);
+	VDP_drawText("       * Flavio Freitas de Sousa        ", pos_x, pos_y+17);
+	VDP_drawText("         (flaviofreitas.h@gmail.com)    ", pos_x, pos_y+18);
+	VDP_drawText("          + Knight character            ", pos_x, pos_y+19);
+	VDP_drawText("          + Splash arts                 ", pos_x, pos_y+20);
+
+	VDP_drawText("       * Lucas Falcao                   ", pos_x, pos_y+22);
 //	VDP_drawText("         (your email here          )    ", pos_x, pos_y+19);
-	VDP_drawText("          + Wizard character            ", pos_x, pos_y+19);
+	VDP_drawText("          + Wizard character            ", pos_x, pos_y+23);
 
-	u32 lastTick = getTick();
-	do
-	{
-		// Screen change cooldown
-		VDP_waitVSync();
-	} while (getTick() - lastTick < MENU_COOLDOWN * 4);
+	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
 
-	JOY_waitPressBtn();
-
+	menu_cooldown(4);
 	set_next_screen(MAIN_SCREEN);
 }
 

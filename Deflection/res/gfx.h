@@ -3,6 +3,13 @@
 
 extern const SpriteDefinition spr_knight_def;
 extern const SpriteDefinition spr_wizard_def;
+extern const SpriteDefinition spr_debug_tile_def;
+extern const SpriteDefinition p1_text;
+extern const SpriteDefinition p2_text;
 extern const Bitmap tileset_arena;
+extern const Bitmap roster1;
+extern const Bitmap roster2;
+extern const Bitmap roster3;
+extern const Bitmap roster4;
 
 #endif // _GFX_H_

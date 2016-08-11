@@ -143,6 +143,8 @@ void main_screen ()
 // [4]
 void character_selection_screen()
 {
+//	VDP_setBackgroundColor(15);
+
 	// P1 and P2 choose characters in these positions (from the character list)
 	s8 choices[PLAYER_COUNT] = { 0, 0 };
 
@@ -161,17 +163,21 @@ void character_selection_screen()
 	 *  First index represents the player;
 	 *  Second index represents the character chosen (and therefore the cursor position and the splash art)
 	 */
-	u16 pos_x[PLAYER_COUNT][CHARACTER_LIST_SIZE] = { { 154, 370 } , { 190, 405 } };
-	u16 pos_y = 285;
-	u16 pos_y_ready = 270;	// When ready, the cursor goes up (towards the splash art)
+	u16 pos_x[PLAYER_COUNT][CHARACTER_LIST_SIZE] = { { 192, 312 } , { 232, 352 } };
+	u16 pos_y = 280;
+	u16 pos_y_ready = 272;	// When ready, the cursor goes up (towards the splash art)
+
+	u16 preview_x[PLAYER_COUNT] = { 144, 384 };
+	u16 preview_y = 300;
 
 	// Splash arts
 	VDP_clearPlan(VDP_PLAN_B, FALSE);
-//	VDP_setPalette(PAL0, roster1.palette->data);
-	VDP_drawBitmapEx(BPLAN, &roster1, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ),  3, 5, FALSE);
-	VDP_drawBitmapEx(BPLAN, &roster2, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144), 12, 5, FALSE);
-	VDP_drawBitmapEx(BPLAN, &roster3, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+272), 21, 5, FALSE);
-	VDP_drawBitmapEx(BPLAN, &roster4, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+400), 30, 5, FALSE);
+	VDP_setPalette(PAL0, select_char.palette->data);
+	VDP_drawBitmapEx(BPLAN, &select_char, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), 4, 1, FALSE);
+	VDP_drawBitmapEx(BPLAN, &roster1, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144 ), 8, 5, FALSE);
+//	VDP_drawBitmapEx(BPLAN, &roster2, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144), 12, 5, FALSE);
+//	VDP_drawBitmapEx(BPLAN, &roster3, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+272), 21, 5, FALSE);
+	VDP_drawBitmapEx(BPLAN, &roster4, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+400), 23, 5, FALSE);
 
 	// Cursors as sprites
 	Sprite choice_spr[2];
@@ -179,12 +185,25 @@ void character_selection_screen()
 	SPR_initSprite(&choice_spr[P1_CODE], &p1_text, pos_x[P1_CODE][choices[P1_CODE]], pos_y, TILE_ATTR(PAL3, 1, 0, 0));
 	SPR_initSprite(&choice_spr[P2_CODE], &p2_text, pos_x[P2_CODE][choices[P2_CODE]], pos_y, TILE_ATTR(PAL3, 1, 0, 0));
 
+	Sprite preview_spr[2];
+	VDP_setPalette(PAL2, spr_knight_def.palette->data);
+	SPR_initSprite(&preview_spr[P1_CODE], &spr_knightx2_def, preview_x[P1_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, 0));
+	SPR_initSprite(&preview_spr[P2_CODE], &spr_wizard_def  , preview_x[P2_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, TRUE));
+
 	// Updating cursor positions (init_Sprite sometimes does not work)
 	choice_spr[P1_CODE].x = pos_x[P1_CODE][choices[P1_CODE]];
 	choice_spr[P1_CODE].y = pos_y;
 	choice_spr[P2_CODE].x = pos_x[P2_CODE][choices[P2_CODE]];
 	choice_spr[P2_CODE].y = pos_y;
 	SPR_update(choice_spr, 2);
+
+	preview_spr[P1_CODE].x = preview_x[P1_CODE];
+	preview_spr[P1_CODE].y = preview_y;
+	preview_spr[P2_CODE].x = preview_x[P2_CODE];
+	preview_spr[P2_CODE].y = preview_y;
+	SPR_setAnim(&preview_spr[P1_CODE], 3);
+	SPR_setAnim(&preview_spr[P2_CODE], 0);
+	SPR_update(preview_spr, 2);
 
 	// Fade In
 	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
@@ -262,6 +281,7 @@ void character_selection_screen()
 			changed = FALSE;
 		}
 
+		SPR_update(preview_spr, 2);
 		VDP_waitVSync();
 	} while (!(ready[P1_CODE] && ready[P2_CODE]));
 

@@ -143,7 +143,7 @@ void main_screen ()
 // [4]
 void character_selection_screen()
 {
-//	VDP_setBackgroundColor(15);
+//	VDP_setBackgroundColor(8);
 
 	// P1 and P2 choose characters in these positions (from the character list)
 	s8 choices[PLAYER_COUNT] = { 0, 0 };
@@ -172,7 +172,7 @@ void character_selection_screen()
 
 	// Splash arts
 	VDP_clearPlan(VDP_PLAN_B, FALSE);
-	VDP_setPalette(PAL0, select_char.palette->data);
+//	VDP_setPalette(PAL0, roster1.palette->data);
 	VDP_drawBitmapEx(BPLAN, &select_char, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), 4, 1, FALSE);
 	VDP_drawBitmapEx(BPLAN, &roster1, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144 ), 8, 5, FALSE);
 //	VDP_drawBitmapEx(BPLAN, &roster2, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144), 12, 5, FALSE);
@@ -180,30 +180,28 @@ void character_selection_screen()
 	VDP_drawBitmapEx(BPLAN, &roster4, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+400), 23, 5, FALSE);
 
 	// Cursors as sprites
-	Sprite choice_spr[2];
+	Sprite sprites[4];
 	VDP_setPalette(PAL3, p1_text.palette->data);
-	SPR_initSprite(&choice_spr[P1_CODE], &p1_text, pos_x[P1_CODE][choices[P1_CODE]], pos_y, TILE_ATTR(PAL3, 1, 0, 0));
-	SPR_initSprite(&choice_spr[P2_CODE], &p2_text, pos_x[P2_CODE][choices[P2_CODE]], pos_y, TILE_ATTR(PAL3, 1, 0, 0));
+	SPR_initSprite(&sprites[P1_CODE], &p1_text, pos_x[P1_CODE][choices[P1_CODE]], pos_y, TILE_ATTR(PAL3, 1, 0, 0));
+	SPR_initSprite(&sprites[P2_CODE], &p2_text, pos_x[P2_CODE][choices[P2_CODE]], pos_y, TILE_ATTR(PAL3, 1, 0, 0));
 
-	Sprite preview_spr[2];
 	VDP_setPalette(PAL2, spr_knight_def.palette->data);
-	SPR_initSprite(&preview_spr[P1_CODE], &spr_knightx2_def, preview_x[P1_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, 0));
-	SPR_initSprite(&preview_spr[P2_CODE], &spr_wizard_def  , preview_x[P2_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, TRUE));
+	SPR_initSprite(&sprites[P1_CODE+2], &spr_knightx2_def, preview_x[P1_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, 0));
+	SPR_initSprite(&sprites[P2_CODE+2], &spr_wizard_def  , preview_x[P2_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, TRUE));
 
 	// Updating cursor positions (init_Sprite sometimes does not work)
-	choice_spr[P1_CODE].x = pos_x[P1_CODE][choices[P1_CODE]];
-	choice_spr[P1_CODE].y = pos_y;
-	choice_spr[P2_CODE].x = pos_x[P2_CODE][choices[P2_CODE]];
-	choice_spr[P2_CODE].y = pos_y;
-	SPR_update(choice_spr, 2);
+	sprites[P1_CODE].x = pos_x[P1_CODE][choices[P1_CODE]];
+	sprites[P1_CODE].y = pos_y;
+	sprites[P2_CODE].x = pos_x[P2_CODE][choices[P2_CODE]];
+	sprites[P2_CODE].y = pos_y;
 
-	preview_spr[P1_CODE].x = preview_x[P1_CODE];
-	preview_spr[P1_CODE].y = preview_y;
-	preview_spr[P2_CODE].x = preview_x[P2_CODE];
-	preview_spr[P2_CODE].y = preview_y;
-	SPR_setAnim(&preview_spr[P1_CODE], 3);
-	SPR_setAnim(&preview_spr[P2_CODE], 0);
-	SPR_update(preview_spr, 2);
+	sprites[P1_CODE+2].x = preview_x[P1_CODE];
+	sprites[P1_CODE+2].y = preview_y;
+	sprites[P2_CODE+2].x = preview_x[P2_CODE];
+	sprites[P2_CODE+2].y = preview_y;
+	SPR_setAnim(&sprites[P1_CODE+2], 3);
+	SPR_setAnim(&sprites[P2_CODE+2], 0);
+	SPR_update(sprites, 4);
 
 	// Fade In
 	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
@@ -228,7 +226,7 @@ void character_selection_screen()
 					{
 						lastTicks[i] = getTick(); // Cooldown
 						ready[i] = FALSE;
-						choice_spr[i].y = pos_y;
+						sprites[i].y = pos_y;
 						changed = TRUE;
 					}
 				}
@@ -249,7 +247,7 @@ void character_selection_screen()
 						else if (joypads[i] & BUTTON_A)
 						{
 							ready[i] = TRUE;
-							choice_spr[i].y = pos_y_ready;
+							sprites[i].y = pos_y_ready;
 						}
 
 						// Back to main screen
@@ -267,7 +265,7 @@ void character_selection_screen()
 						else if (choices[i] < 0) choices[i] = CHARACTER_LIST_SIZE - 1;
 
 						// Updates cursor
-						choice_spr[i].x = pos_x[i][choices[i]];
+						sprites[i].x = pos_x[i][choices[i]];
 						changed = TRUE;
 					}
 				}
@@ -277,11 +275,10 @@ void character_selection_screen()
 
 		if (changed)
 		{
-			SPR_update(choice_spr, 2);
 			changed = FALSE;
 		}
 
-		SPR_update(preview_spr, 2);
+		SPR_update(sprites, 4);
 		VDP_waitVSync();
 	} while (!(ready[P1_CODE] && ready[P2_CODE]));
 
@@ -300,6 +297,41 @@ void character_selection_screen()
 // [5]
 void game_screen ()
 {
+	VDP_clearPlan(APLAN, FALSE);
+	VDP_clearPlan(BPLAN, FALSE);
+
+	#define BALL_CODE 3
+	#define P1_START_X 210
+	#define P2_START_X 280
+	#define START_Y 240
+	#define CENTER_X 160
+	#define CENTER_Y 120
+
+	Sprite sprites [PLAYER_COUNT + 1]; // Players and the ball
+	VDP_setPalette(PAL0, character_sprites[player[P1_CODE].char_code].palette->data);
+	VDP_setPalette(PAL1, character_sprites[player[P2_CODE].char_code].palette->data);
+
+	// Players
+	SPR_initSprite(&sprites[P1_CODE], &character_sprites[player[P1_CODE].char_code], P1_START_X, START_Y, TILE_ATTR(PAL0, 1, 0, 0));
+	SPR_initSprite(&sprites[P2_CODE], &character_sprites[player[P2_CODE].char_code], P2_START_X, START_Y, TILE_ATTR(PAL1, 1, 0, 0));
+	sprites[P1_CODE].x = P1_START_X;
+	sprites[P1_CODE].y = START_Y;
+	sprites[P2_CODE].x = P2_START_X;
+	sprites[P2_CODE].y = START_Y;
+	SPR_setAnim(&sprites[P1_CODE], ANIM_IDLE_R);
+	SPR_setAnim(&sprites[P2_CODE], ANIM_IDLE_L);
+
+	// Ball
+	SPR_initSprite(&sprites[BALL_CODE], &spr_ball_def, CENTER_X, CENTER_Y, TILE_ATTR(PAL1, 1, 0, 0));
+	sprites[P2_CODE].x = P2_START_X;
+	sprites[P2_CODE].y = START_Y;
+
+
+
+
+	SPR_update(sprites, 4);
+
+
 //	CharacterChoices char_codes = character_selection_screen();
 //	character_selection_screen();
 //

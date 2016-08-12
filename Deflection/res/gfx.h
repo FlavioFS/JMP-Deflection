@@ -10,8 +10,6 @@ extern const SpriteDefinition p2_text;
 extern const Bitmap tileset_arena;
 extern const Bitmap select_char;
 extern const Bitmap roster1;
-extern const Bitmap roster2;
-extern const Bitmap roster3;
 extern const Bitmap roster4;
 
 #endif // _GFX_H_

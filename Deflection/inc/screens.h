@@ -5,6 +5,7 @@
 #include "character_list.h"
 #include "score.h"
 #include "player.h"
+#include "animations.h"
 
 #define MAIN_SCREEN                0
 #define CHARACTER_SELECTION_SCREEN 1

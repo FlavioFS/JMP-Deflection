@@ -162,8 +162,8 @@ void character_selection_screen()
 	u16 pos_y = 280;
 	u16 pos_y_ready = 272;	// When ready, the cursor goes up (towards the splash art)
 
-	u16 preview_x[PLAYER_COUNT] = { 144, 384 };
-	u16 preview_y = 300;
+	u16 preview_x[PLAYER_COUNT] = { 144, 408 };
+	u16 preview_y = 310;
 
 	// Splash arts
 	VDP_clearPlan(VDP_PLAN_B, FALSE);
@@ -173,12 +173,10 @@ void character_selection_screen()
 
 	// Cursors as sprites
 	Sprite sprites[4];
-	VDP_setPalette(PAL3, p1_text.palette->data);
-	SPR_initSprite(&sprites[P1_CODE], &p1_text, pos_x[P1_CODE][choices[P1_CODE]], pos_y, TILE_ATTR(PAL3, 1, 0, 0));
-	SPR_initSprite(&sprites[P2_CODE], &p2_text, pos_x[P2_CODE][choices[P2_CODE]], pos_y, TILE_ATTR(PAL3, 1, 0, 0));
+	SPR_initSprite(&sprites[P1_CODE], &p1_text, pos_x[P1_CODE][choices[P1_CODE]], pos_y, TILE_ATTR(PAL0, 1, 0, 0));
+	SPR_initSprite(&sprites[P2_CODE], &p2_text, pos_x[P2_CODE][choices[P2_CODE]], pos_y, TILE_ATTR(PAL0, 1, 0, 0));
 
-	VDP_setPalette(PAL2, spr_knight_def.palette->data);
-	SPR_initSprite(&sprites[P1_CODE+2], &spr_knightx2_def, preview_x[P1_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, 0));
+	SPR_initSprite(&sprites[P1_CODE+2], &spr_knight_def, preview_x[P1_CODE], preview_y, TILE_ATTR(PAL1, 1, 0, 0));
 	SPR_initSprite(&sprites[P2_CODE+2], &spr_wizard_def  , preview_x[P2_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, TRUE));
 
 	// Updating cursor positions (init_Sprite sometimes does not work)
@@ -196,7 +194,14 @@ void character_selection_screen()
 	SPR_update(sprites, 4);
 
 	// Fade In
-	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
+	u16 palettes [64];
+	memcpy(&palettes[0],  roster1.palette->data, 2 * 16);
+	memcpy(&palettes[16], spr_knight_def.palette->data, 2 * 16);
+	memcpy(&palettes[32], spr_wizard_def.palette->data, 2 * 16);
+
+	VDP_fadeIn(0, 3 * 16 - 1, palettes, 20, FALSE);
+
+//	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
 
 	// Selection loop (until both are ready)
 	do
@@ -306,7 +311,7 @@ void game_screen ()
 	// Arena
 	draw_arena();
 
-	// GUI
+	// GUI (HPs)
 	int i = 0;
 	for ( i = 0; i < player[P1_CODE].hp; i++ ) {
 		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 1, FALSE, TRUE);

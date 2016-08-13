@@ -1,5 +1,5 @@
-SPRITE spr_knight_def      "lixo-ase.png" 3 3 -1 4
-SPRITE spr_knightx2_def    "knight-x2.png"          6 6 -1 4
+SPRITE spr_knight_def      "knight24-all-index.png" 3 3 -1 4
+#SPRITE spr_knightx2_def    "knight-x2.png"          6 6 -1 4
 SPRITE spr_wizard_def      "wizard.png"             3 3 -1 4
 SPRITE spr_debug_tile_def  "debug-tile10.png"       1 1 -1 100
 SPRITE p1_text             "p1.png"                 3 3 -1 100

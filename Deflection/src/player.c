@@ -1,14 +1,24 @@
 #include "player.h"
 
-PlayerData player [PLAYER_COUNT];
+PlayerData plyr [PLAYER_COUNT];
 
 void pick_character (u8 pcode, u8 character_code)
 {
-	player[pcode].char_code = character_code;
+	plyr[pcode].char_code = character_code;
 	fill_hp(pcode);
 }
 
 void fill_hp (u8 pcode)
 {
-	player[pcode].hp = hp(player[pcode].char_code);
+	plyr[pcode].hp = hp(plyr[pcode].char_code);
+}
+
+PlayerData player(u8 player_code)
+{
+	return plyr [player_code];
+}
+
+u8 ch_code (u8 player_code)
+{
+	return player(player_code).char_code;
 }

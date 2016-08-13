@@ -12,7 +12,7 @@ void load_tileset()
 						tileset_arena.w/8);	// width in tiles it can differ (?)
 	
 	// load the tileset palette
-	VDP_setPalette (PAL3 ,tileset_arena.palette->data);
+//	VDP_setPalette (PAL3 ,tileset_arena.palette->data);
 }
 
 void draw_arena()

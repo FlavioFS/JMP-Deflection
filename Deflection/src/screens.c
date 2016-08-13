@@ -162,7 +162,7 @@ void character_selection_screen()
 	u16 pos_y = 280;
 	u16 pos_y_ready = 272;	// When ready, the cursor goes up (towards the splash art)
 
-	u16 preview_x[PLAYER_COUNT] = { 144, 408 };
+	u16 preview_x[PLAYER_COUNT] = { 144, 432 };
 	u16 preview_y = 310;
 
 	// Splash arts
@@ -313,16 +313,16 @@ void game_screen ()
 
 	// GUI (HPs)
 	int i = 0;
-	for ( i = 0; i < player[P1_CODE].hp; i++ ) {
+	for ( i = 0; i < player(P1_CODE).hp; i++ ) {
 		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 1, FALSE, TRUE);
 	}
-	for ( i = 0; i < player[P2_CODE].hp; i++ ) {
+	for ( i = 0; i < player(P2_CODE).hp; i++ ) {
 		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P2_X(i), 1, FALSE, TRUE);
 	}
 
 	// Players
-	SPR_initSprite(&sprites[P1_CODE], &character_sprites[player[P1_CODE].char_code], P1_START_X, START_Y, TILE_ATTR(PAL1, 1, 0, 0));
-	SPR_initSprite(&sprites[P2_CODE], &character_sprites[player[P2_CODE].char_code], P2_START_X, START_Y, TILE_ATTR(PAL2, 1, 0, 0));
+	SPR_initSprite(&sprites[P1_CODE], ch_sprite(ch_code(P1_CODE)), P1_START_X, START_Y, TILE_ATTR(PAL1, 1, 0, 0));
+	SPR_initSprite(&sprites[P2_CODE], ch_sprite(ch_code(P2_CODE)), P2_START_X, START_Y, TILE_ATTR(PAL2, 1, 0, 0));
 	sprites[P1_CODE].x = P1_START_X;
 	sprites[P1_CODE].y = START_Y;
 	sprites[P2_CODE].x = P2_START_X;
@@ -339,10 +339,11 @@ void game_screen ()
 
 	u16 palettes [64];
 	memcpy(&palettes[0],  spr_hp_def.palette->data, 2 * 16);
-	memcpy(&palettes[16], character_sprites[player[P1_CODE].char_code].palette->data, 2 * 16);
-	memcpy(&palettes[32], character_sprites[player[P2_CODE].char_code].palette->data, 2 * 16);
+	memcpy(&palettes[16], ch_sprite(ch_code(P1_CODE))->palette->data, 2 * 16);
+	memcpy(&palettes[32], ch_sprite(ch_code(P2_CODE))->palette->data, 2 * 16);
+	memcpy(&palettes[48], tileset_arena.palette->data, 2 * 16);
 
-	VDP_fadeIn(0, 3 * 16 - 1, palettes, 20, FALSE);
+	VDP_fadeIn(0, 4 * 16 - 1, palettes, 20, FALSE);
 
 	while (TRUE)
 	{

@@ -14,10 +14,12 @@ typedef struct
 	u8 char_code; // Selected character's code
 } PlayerData;
 
-extern PlayerData player [PLAYER_COUNT];
+extern PlayerData plyr [PLAYER_COUNT];
 
 // Methods
 void pick_character (u8 pcode, u8 character_code);
 void fill_hp (u8 pcode);
+PlayerData player(u8 player_code);
+u8 ch_code(u8 player_code);
 
 #endif /* _PLAYER_H */

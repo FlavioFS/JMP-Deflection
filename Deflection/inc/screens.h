@@ -17,6 +17,7 @@
 #define MENU_COOLDOWN 50
 
 extern u8 next_screen;
+extern u32 lastTick;
 
 //// Methods
 void set_next_screen (u8 screen_code);	// [1]

@@ -21,7 +21,7 @@ int main()
 {
 	VDP_setScreenWidth320();
 	SPR_init(0);
-	init_character_list();
+	CHL_initCharacterList();
 	VDP_setPaletteColors(0, palette_black, 64);
 
 

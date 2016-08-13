@@ -3,6 +3,7 @@
 
 extern const SpriteDefinition spr_knight_def;
 extern const SpriteDefinition spr_wizard_def;
+extern const SpriteDefinition spr_ball_def;
 extern const SpriteDefinition spr_debug_tile_def;
 extern const SpriteDefinition p1_text;
 extern const SpriteDefinition p2_text;

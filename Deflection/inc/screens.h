@@ -17,19 +17,22 @@
 #define MENU_COOLDOWN 50
 
 extern u8 next_screen;
-extern u32 lastTick;
 
 //// Methods
 void set_next_screen (u8 screen_code);	// [1]
 void current_screen();					// [2]
-void menu_cooldown(u8 multiplier);      // [4]
+void menu_cooldown(u8 multiplier);      // [3]
 
 // Screen list
-void main_screen();						// [3]
-void character_selection_screen();		// [4]
-void game_screen();						// [5]
-void options_screen();					// [6]
-void credits_screen();					// [7]
+void main_screen();						// [4]
+void character_selection_screen();		// [5]
+void game_screen();						// [6]
+void options_screen();					// [7]
+void credits_screen();					// [8]
+
+// Joy Handlers (callbacks)
+void joyNonDirectional ( u16 joy, u16 changed, u16 state );
+void emptyJoyHandler ( u16 joy, u16 changed, u16 state );
 
 // TODO remove faint?
 void faint (PlayerData * p, u8 * match_over);

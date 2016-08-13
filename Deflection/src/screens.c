@@ -2,6 +2,9 @@
 
 u8 next_screen = MAIN_SCREEN;
 
+// TODO Remove lastTick
+//u32 lastTick;
+
 // [1]
 void set_next_screen (u8 screen_code)
 {
@@ -52,7 +55,7 @@ void current_screen()
 }
 
 
-// [4]
+// [3]
 void menu_cooldown (u8 multiplier)
 {
 	u32 lastTick = getTick();
@@ -67,7 +70,7 @@ void menu_cooldown (u8 multiplier)
 }
 
 
-// [3]
+// [4]
 void main_screen ()
 {
 	u8 selecting = TRUE;
@@ -135,16 +138,15 @@ void main_screen ()
 }
 
 
-// [4]
+// [5]
 void character_selection_screen()
 {
 //	VDP_setBackgroundColor(8);
 
 	// P1 and P2 choose characters in these positions (from the character list)
-	s8 choices[PLAYER_COUNT] = { 0, 0 };
+	s8 choices[PLAYER_COUNT] = { KNIGHT_CODE, WIZARD_CODE };
 
 	u8 ready[PLAYER_COUNT] = { FALSE, FALSE };	// Are the players ready or still selecting?
-	u8 changed = TRUE;							// Avoid refreshing needlessly
 	u8 success = TRUE;							// FALSE when returning to main screen
 	u16 joypads[PLAYER_COUNT];
 
@@ -162,7 +164,7 @@ void character_selection_screen()
 	u16 pos_y = 280;
 	u16 pos_y_ready = 272;	// When ready, the cursor goes up (towards the splash art)
 
-	u16 preview_x[PLAYER_COUNT] = { 144, 432 };
+	u16 preview_x[PLAYER_COUNT] = { 144, 402 };
 	u16 preview_y = 310;
 
 	// Splash arts
@@ -172,12 +174,19 @@ void character_selection_screen()
 	VDP_drawImageEx(BPLAN, &roster4, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+400), 23, 5, FALSE, TRUE);
 
 	// Cursors as sprites
-	Sprite sprites[4];
+	Sprite sprites[6];
 	SPR_initSprite(&sprites[P1_CODE], &p1_text, pos_x[P1_CODE][choices[P1_CODE]], pos_y, TILE_ATTR(PAL0, 1, 0, 0));
 	SPR_initSprite(&sprites[P2_CODE], &p2_text, pos_x[P2_CODE][choices[P2_CODE]], pos_y, TILE_ATTR(PAL0, 1, 0, 0));
 
 	SPR_initSprite(&sprites[P1_CODE+2], &spr_knight_def, preview_x[P1_CODE], preview_y, TILE_ATTR(PAL1, 1, 0, 0));
-	SPR_initSprite(&sprites[P2_CODE+2], &spr_wizard_def  , preview_x[P2_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, TRUE));
+	SPR_initSprite(&sprites[P2_CODE+2], &spr_knight_def, preview_x[P2_CODE], preview_y, TILE_ATTR(PAL1, 1, 0, 0));
+	SPR_initSprite(&sprites[P1_CODE+4], &spr_wizard_def, preview_x[P1_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, 0));
+	SPR_initSprite(&sprites[P2_CODE+4], &spr_wizard_def, preview_x[P2_CODE], preview_y, TILE_ATTR(PAL2, 1, 0, TRUE));
+
+	SPR_setNeverVisible(&sprites[P1_CODE+2], choices[P1_CODE]);
+	SPR_setNeverVisible(&sprites[P2_CODE+2], choices[P2_CODE]);
+	SPR_setNeverVisible(&sprites[P1_CODE+4], 1-choices[P1_CODE]);
+	SPR_setNeverVisible(&sprites[P2_CODE+4], 1-choices[P2_CODE]);
 
 	// Updating cursor positions (init_Sprite sometimes does not work)
 	sprites[P1_CODE].x = pos_x[P1_CODE][choices[P1_CODE]];
@@ -187,11 +196,19 @@ void character_selection_screen()
 
 	sprites[P1_CODE+2].x = preview_x[P1_CODE];
 	sprites[P1_CODE+2].y = preview_y;
+	sprites[P1_CODE+4].x = preview_x[P1_CODE];
+	sprites[P1_CODE+4].y = preview_y;
+
 	sprites[P2_CODE+2].x = preview_x[P2_CODE];
 	sprites[P2_CODE+2].y = preview_y;
+	sprites[P2_CODE+4].x = preview_x[P2_CODE];
+	sprites[P2_CODE+4].y = preview_y;
+
 	SPR_setAnim(&sprites[P1_CODE+2], 3);
-	SPR_setAnim(&sprites[P2_CODE+2], 0);
-	SPR_update(sprites, 4);
+	SPR_setAnim(&sprites[P1_CODE+4], 3);
+	SPR_setAnim(&sprites[P2_CODE+2], 2);
+	SPR_setAnim(&sprites[P2_CODE+4], 2);
+	SPR_update(sprites, 6);
 
 	// Fade In
 	u16 palettes [64];
@@ -200,8 +217,6 @@ void character_selection_screen()
 	memcpy(&palettes[32], spr_wizard_def.palette->data, 2 * 16);
 
 	VDP_fadeIn(0, 3 * 16 - 1, palettes, 20, FALSE);
-
-//	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
 
 	// Selection loop (until both are ready)
 	do
@@ -224,7 +239,6 @@ void character_selection_screen()
 						lastTicks[i] = getTick(); // Cooldown
 						ready[i] = FALSE;
 						sprites[i].y = pos_y;
-						changed = TRUE;
 					}
 				}
 
@@ -237,8 +251,23 @@ void character_selection_screen()
 						lastTicks[i] = getTick(); // Cooldown
 
 						// Moves cursor
-						if      (joypads[i] & BUTTON_LEFT)  choices[i]--;
-						else if (joypads[i] & BUTTON_RIGHT) choices[i]++;
+						if (joypads[i] & (BUTTON_LEFT | BUTTON_RIGHT))
+						{
+							if      (joypads[i] & BUTTON_LEFT)  choices[i]--;
+							else if (joypads[i] & BUTTON_RIGHT) choices[i]++;
+
+							// Circular list (overflow / underflow)
+							if (choices[i] >= CHARACTER_LIST_SIZE) choices[i] = 0;
+							else if (choices[i] < 0) choices[i] = CHARACTER_LIST_SIZE - 1;
+
+							// Updates cursor
+							sprites[i].x = pos_x[i][choices[i]];
+
+							SPR_setNeverVisible(&sprites[i + 2], choices[i]);
+							SPR_setNeverVisible(&sprites[i + 4], 1-choices[i]);
+//							VDP_setSpriteDirectP(i+2, CHL_chSprite(1));
+//							SPR_initSprite(&sprites[i+2], CHL_chSprite(choices[i]), preview_x[i], preview_y, TILE_ATTR(PAL1, 1, 0, i));
+						}
 
 						// Ready
 						else if (joypads[i] & BUTTON_A)
@@ -256,26 +285,14 @@ void character_selection_screen()
 							ready[P2_CODE] = TRUE;
 							break;
 						}
-
-						// Circular list (overflow / underflow)
-						if (choices[i] >= CHARACTER_LIST_SIZE) choices[i] = 0;
-						else if (choices[i] < 0) choices[i] = CHARACTER_LIST_SIZE - 1;
-
-						// Updates cursor
-						sprites[i].x = pos_x[i][choices[i]];
-						changed = TRUE;
 					}
 				}
 
 			}
 		}
 
-		if (changed)
-		{
-			changed = FALSE;
-		}
 
-		SPR_update(sprites, 4);
+		SPR_update(sprites, 6);
 		VDP_waitVSync();
 	} while (!(ready[P1_CODE] && ready[P2_CODE]));
 
@@ -284,25 +301,22 @@ void character_selection_screen()
 	// Fails when player press B "twice" (unselected B)
 	if (success)
 	{
-		pick_character(P1_CODE, choices[P1_CODE]);
-		pick_character(P2_CODE, choices[P2_CODE]);
+		PL_pickCharacter(P1_CODE, choices[P1_CODE]);
+		PL_pickCharacter(P2_CODE, choices[P2_CODE]);
 		set_next_screen(GAME_SCREEN);
 	}
 }
 
 
-// [5]
+// [6]
 void game_screen ()
 {
-//	VDP_clearPlan(APLAN, FALSE);
-//	VDP_clearPlan(BPLAN, FALSE);
-
 	#define BALL_CODE 3
 	#define P1_START_X 210
 	#define P2_START_X 330
 	#define START_Y 240
-	#define CENTER_X 160
-	#define CENTER_Y 120
+	#define CENTER_X 270
+	#define CENTER_Y 240
 	#define HP_P1_X(index) (1 + 2*index)
 	#define HP_P2_X(index) (37 - 2*index)
 
@@ -313,16 +327,16 @@ void game_screen ()
 
 	// GUI (HPs)
 	int i = 0;
-	for ( i = 0; i < player(P1_CODE).hp; i++ ) {
+	for ( i = 0; i < PL_player(P1_CODE).hp; i++ ) {
 		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 1, FALSE, TRUE);
 	}
-	for ( i = 0; i < player(P2_CODE).hp; i++ ) {
+	for ( i = 0; i < PL_player(P2_CODE).hp; i++ ) {
 		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P2_X(i), 1, FALSE, TRUE);
 	}
 
 	// Players
-	SPR_initSprite(&sprites[P1_CODE], ch_sprite(ch_code(P1_CODE)), P1_START_X, START_Y, TILE_ATTR(PAL1, 1, 0, 0));
-	SPR_initSprite(&sprites[P2_CODE], ch_sprite(ch_code(P2_CODE)), P2_START_X, START_Y, TILE_ATTR(PAL2, 1, 0, 0));
+	SPR_initSprite(&sprites[P1_CODE], CHL_chSprite(PL_chCode(P1_CODE)), P1_START_X, START_Y, TILE_ATTR(PAL1, 1, 0, 0));
+	SPR_initSprite(&sprites[P2_CODE], CHL_chSprite(PL_chCode(P2_CODE)), P2_START_X, START_Y, TILE_ATTR(PAL2, 1, 0, 0));
 	sprites[P1_CODE].x = P1_START_X;
 	sprites[P1_CODE].y = START_Y;
 	sprites[P2_CODE].x = P2_START_X;
@@ -331,29 +345,30 @@ void game_screen ()
 	SPR_setAnim(&sprites[P2_CODE], ANIM_IDLE_L);
 
 	// TODO Ball
-//	SPR_initSprite(&sprites[BALL_CODE], &spr_hp_def, CENTER_X, CENTER_Y, TILE_ATTR(PAL0, 1, 0, 0));
-//	sprites[P2_CODE].x = CENTER_X;
-//	sprites[P2_CODE].y = CENTER_Y;
+	SPR_initSprite(&sprites[BALL_CODE], &spr_ball_def, CENTER_X, CENTER_Y, TILE_ATTR(PAL1, 1, 0, 0));
+	sprites[BALL_CODE].x = CENTER_X;
+	sprites[BALL_CODE].y = CENTER_Y;
+	SPR_setAnim(&sprites[BALL_CODE], 0); // Onle one animation for the ball
 
-	SPR_update(sprites, 2);
+	SPR_update(sprites, 4);
 
 	u16 palettes [64];
 	memcpy(&palettes[0],  spr_hp_def.palette->data, 2 * 16);
-	memcpy(&palettes[16], ch_sprite(ch_code(P1_CODE))->palette->data, 2 * 16);
-	memcpy(&palettes[32], ch_sprite(ch_code(P2_CODE))->palette->data, 2 * 16);
+	memcpy(&palettes[16], CHL_chSprite(PL_chCode(P1_CODE))->palette->data, 2 * 16);
+	memcpy(&palettes[32], CHL_chSprite(PL_chCode(P2_CODE))->palette->data, 2 * 16);
 	memcpy(&palettes[48], tileset_arena.palette->data, 2 * 16);
 
 	VDP_fadeIn(0, 4 * 16 - 1, palettes, 20, FALSE);
 
 	while (TRUE)
 	{
-		SPR_update(sprites, 2);
+		SPR_update(sprites, 4);
 		VDP_waitVSync();
 	}
 }
 
 
-// [6]
+// [7]
 void options_screen ()
 {
 	u8 pos_x = 0;
@@ -367,7 +382,7 @@ void options_screen ()
 }
 
 
-// [7]
+// [8]
 void credits_screen ()
 {
 	u8 pos_x = 0;
@@ -402,6 +417,83 @@ void credits_screen ()
 	set_next_screen(MAIN_SCREEN);
 }
 
+
+void joyNonDirectional ( u16 joy, u16 changed, u16 state )
+{
+	if (joy == JOY_1)
+	{
+		// START button state changed
+		if (changed & BUTTON_START)
+		{
+			// Pause game
+		}
+
+		if (changed & state)
+		{
+			if ( state & ( BUTTON_A | BUTTON_B | BUTTON_C ) )
+			{
+				// Already attacking
+				if (getTick() - PL_lastAtk(P1_CODE) < CHL_cd(PL_chCode(P1_CODE))) return;
+				PL_attack(P1_CODE);
+
+				// if (player_one->sprite->animInd == 8 || player_one->sprite->animInd == 9 ) return;
+
+//				if (player_one->anim_idle_last_direction_id == player_one->anim_idle_up_id)
+//				{
+//					SPR_setAnim(player_one->sprite, player_one->anim_atk_left_id);
+//				}
+//
+//				else if (player_one->anim_idle_last_direction_id == player_one->anim_idle_down_id)
+//				{
+//					SPR_setAnim(player_one->sprite, player_one->anim_atk_right_id);
+//				}
+//
+//				else if (player_one->anim_idle_last_direction_id == player_one->anim_idle_left_id)
+//				{
+//					SPR_setAnim(player_one->sprite, player_one->anim_atk_left_id);
+//				}
+//
+//				else if (player_one->anim_idle_last_direction_id == player_one->anim_idle_right_id)
+//				{
+//					SPR_setAnim(player_one->sprite, player_one->anim_atk_right_id);
+//				}
+			}
+		}
+	}
+
+	// else if (joy == JOY_2)
+	// {
+	// 	// START button state changed
+	// 	if (changed & BUTTON_START)
+	// 	{
+	// 		// Pause game
+	// 	}
+
+	// 	if (changed & state)
+	// 	{
+	// 		if ( (state & BUTTON_A) )
+	// 		{
+	// 			if (player_two->anim_idle_last_direction_id == player_two->anim_atk_up_id)
+	// 				SPR_setAnim(c, player_two->anim_atk_up_id);
+
+	// 			else if (player_two->anim_idle_last_direction_id == player_two->anim_atk_down_id)
+	// 				SPR_setAnim(c, player_two->anim_atk_down_id);
+
+	// 			else if (player_two->anim_idle_last_direction_id == player_two->anim_atk_left_id)
+	// 				SPR_setAnim(c, player_two->anim_atk_left_id);
+
+	// 			else if (player_two->anim_idle_last_direction_id == player_two->anim_atk_right_id)
+	// 				SPR_setAnim(c, player_two->anim_atk_right_id);
+	// 		}
+	// 	}
+	// }
+}
+
+
+void emptyJoyHandler ( u16 joy, u16 changed, u16 state )
+{
+
+}
 
 // TODO remove this?
 /**

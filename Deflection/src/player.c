@@ -2,23 +2,35 @@
 
 PlayerData plyr [PLAYER_COUNT];
 
-void pick_character (u8 pcode, u8 character_code)
+void PL_pickCharacter (u8 player_code, u8 character_code)
 {
-	plyr[pcode].char_code = character_code;
-	fill_hp(pcode);
+	plyr[player_code].char_code = character_code;
+	PL_fillHp(player_code);
+	PL_attack(character_code);
 }
 
-void fill_hp (u8 pcode)
+void PL_fillHp (u8 player_code)
 {
-	plyr[pcode].hp = hp(plyr[pcode].char_code);
+	plyr[player_code].hp = CHL_hp(plyr[player_code].char_code);
 }
 
-PlayerData player(u8 player_code)
+void PL_attack (u8 player_code)
+{
+	plyr[player_code].last_attack = getTick();
+}
+
+// Getters
+PlayerData PL_player(u8 player_code)
 {
 	return plyr [player_code];
 }
 
-u8 ch_code (u8 player_code)
+u8 PL_chCode (u8 player_code)
 {
-	return player(player_code).char_code;
+	return PL_player(player_code).char_code;
+}
+
+u32 PL_lastAtk (u8 player_code)
+{
+	return plyr[player_code].last_attack;
 }

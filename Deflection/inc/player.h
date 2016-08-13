@@ -12,14 +12,19 @@ typedef struct
 {
 	u8 hp;        // Current HP, not character's base HP
 	u8 char_code; // Selected character's code
+	u32 last_attack; // Cannot spam attack
 } PlayerData;
 
 extern PlayerData plyr [PLAYER_COUNT];
 
-// Methods
-void pick_character (u8 pcode, u8 character_code);
-void fill_hp (u8 pcode);
-PlayerData player(u8 player_code);
-u8 ch_code(u8 player_code);
+// Setters
+void PL_pickCharacter (u8 player_code, u8 character_code);
+void PL_fillHp (u8 player_code);
+void PL_attack (u8 player_code);
+
+// Getters
+PlayerData PL_player(u8 player_code);
+u8 PL_chCode(u8 player_code);
+u32 PL_lastAtk (u8 player_code);
 
 #endif /* _PLAYER_H */

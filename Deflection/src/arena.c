@@ -2,8 +2,6 @@
 #include "arena.h"
 #include "gfx.h"
 
-void draw_obstacle(unsigned int x,unsigned int y, unsigned int w, unsigned int h);
-
 void load_tileset()
 {
 	// load the tiles

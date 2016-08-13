@@ -92,12 +92,7 @@ void main_screen ()
 
 	// Fade in
 	VDP_fadeIn(0, 15, roster1.palette->data, 20, FALSE);
-//	u16 palette[64];
-//	memcpy(&palette[ 0],    bgb_image.palette->data, 16 * 2);
-//	memcpy(&palette[16],    bga_image.palette->data, 16 * 2);
-//	memcpy(&palette[32], sonic_sprite.palette->data, 16 * 2);
 
-	// D
 	do
 	{
 		// Draws menu
@@ -172,12 +167,9 @@ void character_selection_screen()
 
 	// Splash arts
 	VDP_clearPlan(VDP_PLAN_B, FALSE);
-//	VDP_setPalette(PAL0, roster1.palette->data);
-	VDP_drawBitmapEx(BPLAN, &select_char, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), 4, 1, FALSE);
-	VDP_drawBitmapEx(BPLAN, &roster1, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144 ), 8, 5, FALSE);
-//	VDP_drawBitmapEx(BPLAN, &roster2, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144), 12, 5, FALSE);
-//	VDP_drawBitmapEx(BPLAN, &roster3, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+272), 21, 5, FALSE);
-	VDP_drawBitmapEx(BPLAN, &roster4, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+400), 23, 5, FALSE);
+	VDP_drawImageEx(BPLAN, &select_char, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), 4, 1, FALSE, TRUE);
+	VDP_drawImageEx(BPLAN, &roster1, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+144 ), 8, 5, FALSE, TRUE);
+	VDP_drawImageEx(BPLAN, &roster4, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+400), 23, 5, FALSE, TRUE);
 
 	// Cursors as sprites
 	Sprite sprites[4];
@@ -297,23 +289,35 @@ void character_selection_screen()
 // [5]
 void game_screen ()
 {
-	VDP_clearPlan(APLAN, FALSE);
-	VDP_clearPlan(BPLAN, FALSE);
+//	VDP_clearPlan(APLAN, FALSE);
+//	VDP_clearPlan(BPLAN, FALSE);
 
 	#define BALL_CODE 3
 	#define P1_START_X 210
-	#define P2_START_X 280
+	#define P2_START_X 330
 	#define START_Y 240
 	#define CENTER_X 160
 	#define CENTER_Y 120
+	#define HP_P1_X(index) (1 + 2*index)
+	#define HP_P2_X(index) (37 - 2*index)
 
 	Sprite sprites [PLAYER_COUNT + 1]; // Players and the ball
-	VDP_setPalette(PAL0, character_sprites[player[P1_CODE].char_code].palette->data);
-	VDP_setPalette(PAL1, character_sprites[player[P2_CODE].char_code].palette->data);
+
+	// Arena
+	draw_arena();
+
+	// GUI
+	int i = 0;
+	for ( i = 0; i < player[P1_CODE].hp; i++ ) {
+		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 1, FALSE, TRUE);
+	}
+	for ( i = 0; i < player[P2_CODE].hp; i++ ) {
+		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P2_X(i), 1, FALSE, TRUE);
+	}
 
 	// Players
-	SPR_initSprite(&sprites[P1_CODE], &character_sprites[player[P1_CODE].char_code], P1_START_X, START_Y, TILE_ATTR(PAL0, 1, 0, 0));
-	SPR_initSprite(&sprites[P2_CODE], &character_sprites[player[P2_CODE].char_code], P2_START_X, START_Y, TILE_ATTR(PAL1, 1, 0, 0));
+	SPR_initSprite(&sprites[P1_CODE], &character_sprites[player[P1_CODE].char_code], P1_START_X, START_Y, TILE_ATTR(PAL1, 1, 0, 0));
+	SPR_initSprite(&sprites[P2_CODE], &character_sprites[player[P2_CODE].char_code], P2_START_X, START_Y, TILE_ATTR(PAL2, 1, 0, 0));
 	sprites[P1_CODE].x = P1_START_X;
 	sprites[P1_CODE].y = START_Y;
 	sprites[P2_CODE].x = P2_START_X;
@@ -321,31 +325,25 @@ void game_screen ()
 	SPR_setAnim(&sprites[P1_CODE], ANIM_IDLE_R);
 	SPR_setAnim(&sprites[P2_CODE], ANIM_IDLE_L);
 
-	// Ball
-	SPR_initSprite(&sprites[BALL_CODE], &spr_ball_def, CENTER_X, CENTER_Y, TILE_ATTR(PAL1, 1, 0, 0));
-	sprites[P2_CODE].x = P2_START_X;
-	sprites[P2_CODE].y = START_Y;
+	// TODO Ball
+//	SPR_initSprite(&sprites[BALL_CODE], &spr_hp_def, CENTER_X, CENTER_Y, TILE_ATTR(PAL0, 1, 0, 0));
+//	sprites[P2_CODE].x = CENTER_X;
+//	sprites[P2_CODE].y = CENTER_Y;
 
+	SPR_update(sprites, 2);
 
+	u16 palettes [64];
+	memcpy(&palettes[0],  spr_hp_def.palette->data, 2 * 16);
+	memcpy(&palettes[16], character_sprites[player[P1_CODE].char_code].palette->data, 2 * 16);
+	memcpy(&palettes[32], character_sprites[player[P2_CODE].char_code].palette->data, 2 * 16);
 
+	VDP_fadeIn(0, 3 * 16 - 1, palettes, 20, FALSE);
 
-	SPR_update(sprites, 4);
-
-
-//	CharacterChoices char_codes = character_selection_screen();
-//	character_selection_screen();
-//
-//	PlayerData p1, p2;
-//	pick_character(&p1, player[P1_CODE].char_code);
-//	pick_character(&p2, player[P2_CODE].char_code);
-//
-//	Sprite sprite_list [2];
-//
-//	VDP_setPalette(PAL0, character_sprites[p1.char_code].palette->data);
-//	VDP_setPalette(PAL2, character_sprites[p2.char_code].palette->data);
-//
-//	SPR_initSprite(&sprite_list[0], &character_sprites[p1.char_code], 220, 220, TILE_ATTR(PAL1, 1, 0, 0));
-//	SPR_initSprite(&sprite_list[1], &character_sprites[p2.char_code], 260, 220, TILE_ATTR(PAL2, 1, 0, 0));
+	while (TRUE)
+	{
+		SPR_update(sprites, 2);
+		VDP_waitVSync();
+	}
 }
 
 

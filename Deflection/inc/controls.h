@@ -4,6 +4,7 @@
 #include "vector_utils.h"
 #include "character.h"
 #include "player.h"
+#include "arena.h"
 
 //void renderPlayers		( Vector2D p1_pos, Vector2D p2_pos	 );
 // void joyAtkHandler     ( u16 joy, u16 joy_changed, u16 state );

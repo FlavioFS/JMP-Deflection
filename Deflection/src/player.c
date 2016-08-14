@@ -46,7 +46,7 @@ u32 PL_lastAtk (u8 player_code)
 	return plyr[player_code].last_attack;
 }
 
-u8 last_dir (u8 player_code)
+u8 Pl_lastDir (u8 player_code)
 {
 	return plyr[player_code].last_direction;
 }

@@ -323,16 +323,81 @@ void game_screen ()
 
 	Sprite sprites [PLAYER_COUNT + 1]; // Players and the ball
 
+	/////////////////////////////////////////////////////////////
+	/**
+	 *  This is a NESTED joy handler, so it can access the variable "sprites"
+	 */
+	void joyNonDirectional ( u16 joy, u16 changed, u16 state )
+	{
+		if (joy == JOY_1)
+		{
+			// START button state changed
+			if (changed & BUTTON_START)
+			{
+				// Pause game
+			}
+
+			if (changed & state)
+			{
+				if ( state & ( BUTTON_A | BUTTON_B | BUTTON_C ) )
+				{
+					PlayerData * player = PL_player(P1_CODE);
+
+					// Already attacking
+					if ( getTick() - player->last_attack < CHL_cd(player->char_code) ) return;
+					PL_attack(P1_CODE);
+
+					u8 lastDir = player->last_direction;
+					if      (lastDir == ANIM_IDLE_U) SPR_setAnim(&sprites[P1_CODE], ANIM_ATK_L);
+					else if (lastDir == ANIM_IDLE_D) SPR_setAnim(&sprites[P1_CODE], ANIM_ATK_R);
+					else if (lastDir == ANIM_IDLE_L) SPR_setAnim(&sprites[P1_CODE], ANIM_ATK_L);
+					else if (lastDir == ANIM_IDLE_R) SPR_setAnim(&sprites[P1_CODE], ANIM_ATK_R);
+					else VDP_drawText("X", 20, 0);
+
+				}
+			}
+		}
+
+		else if (joy == JOY_2)
+		{
+			// START button state changed
+			if (changed & BUTTON_START)
+			{
+				// Pause game
+			}
+
+			if (changed & state)
+			{
+				if ( state & ( BUTTON_A | BUTTON_B | BUTTON_C ) )
+				{
+					PlayerData * player = PL_player(P2_CODE);
+
+					// Already attacking
+					if ( getTick() - player->last_attack < CHL_cd(player->char_code) ) return;
+					PL_attack(P2_CODE);
+
+					u8 lastDir = player->last_direction;
+					if      (lastDir == ANIM_IDLE_U) SPR_setAnim(&sprites[P2_CODE], ANIM_ATK_L);
+					else if (lastDir == ANIM_IDLE_D) SPR_setAnim(&sprites[P2_CODE], ANIM_ATK_R);
+					else if (lastDir == ANIM_IDLE_L) SPR_setAnim(&sprites[P2_CODE], ANIM_ATK_L);
+					else if (lastDir == ANIM_IDLE_R) SPR_setAnim(&sprites[P2_CODE], ANIM_ATK_R);
+				}
+			}
+		}
+	}
+	// The joy handler ends here
+	/////////////////////////////////////////////////////////////
+
 	// Arena
 	draw_arena();
 
 	// GUI (HPs)
 	int i = 0;
 	for ( i = 0; i < PL_hp(P1_CODE); i++ ) {
-		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 1, FALSE, TRUE);
+		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 0, FALSE, TRUE);
 	}
 	for ( i = 0; i < PL_hp(P2_CODE); i++ ) {
-		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P2_X(i), 1, FALSE, TRUE);
+		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P2_X(i), 0, FALSE, TRUE);
 	}
 
 	// Players
@@ -359,6 +424,8 @@ void game_screen ()
 	memcpy(&palettes[32], CHL_chSprite(PL_chCode(P2_CODE))->palette->data, 2 * 16);
 	memcpy(&palettes[48], tileset_arena.palette->data, 2 * 16);
 
+	JOY_setEventHandler(joyNonDirectional);
+
 	VDP_fadeIn(0, 4 * 16 - 1, palettes, 20, FALSE);
 
 	while (TRUE)
@@ -368,6 +435,9 @@ void game_screen ()
 		SPR_update(sprites, 4);
 		VDP_waitVSync();
 	}
+
+	JOY_setEventHandler(emptyJoyHandler);
+
 }
 
 
@@ -420,77 +490,6 @@ void credits_screen ()
 	set_next_screen(MAIN_SCREEN);
 }
 
-
-void joyNonDirectional ( u16 joy, u16 changed, u16 state )
-{
-	if (joy == JOY_1)
-	{
-		// START button state changed
-		if (changed & BUTTON_START)
-		{
-			// Pause game
-		}
-
-		if (changed & state)
-		{
-			if ( state & ( BUTTON_A | BUTTON_B | BUTTON_C ) )
-			{
-				// Already attacking
-				if (getTick() - PL_lastAtk(P1_CODE) < CHL_cd(PL_chCode(P1_CODE))) return;
-				PL_attack(P1_CODE);
-
-//				 if (player_one->sprite->animInd == 8 || player_one->sprite->animInd == 9 ) return;
-
-//				if (player_one->anim_idle_last_direction_id == player_one->anim_idle_up_id)
-//				{
-//					SPR_setAnim(player_one->sprite, player_one->anim_atk_left_id);
-//				}
-//
-//				else if (player_one->anim_idle_last_direction_id == player_one->anim_idle_down_id)
-//				{
-//					SPR_setAnim(player_one->sprite, player_one->anim_atk_right_id);
-//				}
-//
-//				else if (player_one->anim_idle_last_direction_id == player_one->anim_idle_left_id)
-//				{
-//					SPR_setAnim(player_one->sprite, player_one->anim_atk_left_id);
-//				}
-//
-//				else if (player_one->anim_idle_last_direction_id == player_one->anim_idle_right_id)
-//				{
-//					SPR_setAnim(player_one->sprite, player_one->anim_atk_right_id);
-//				}
-			}
-		}
-	}
-
-	// else if (joy == JOY_2)
-	// {
-	// 	// START button state changed
-	// 	if (changed & BUTTON_START)
-	// 	{
-	// 		// Pause game
-	// 	}
-
-	// 	if (changed & state)
-	// 	{
-	// 		if ( (state & BUTTON_A) )
-	// 		{
-	// 			if (player_two->anim_idle_last_direction_id == player_two->anim_atk_up_id)
-	// 				SPR_setAnim(c, player_two->anim_atk_up_id);
-
-	// 			else if (player_two->anim_idle_last_direction_id == player_two->anim_atk_down_id)
-	// 				SPR_setAnim(c, player_two->anim_atk_down_id);
-
-	// 			else if (player_two->anim_idle_last_direction_id == player_two->anim_atk_left_id)
-	// 				SPR_setAnim(c, player_two->anim_atk_left_id);
-
-	// 			else if (player_two->anim_idle_last_direction_id == player_two->anim_atk_right_id)
-	// 				SPR_setAnim(c, player_two->anim_atk_right_id);
-	// 		}
-	// 	}
-	// }
-}
 
 // TODO setar isso depois do jogo
 void emptyJoyHandler ( u16 joy, u16 changed, u16 state )

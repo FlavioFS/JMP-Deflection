@@ -30,6 +30,6 @@ PlayerData * PL_player(u8 player_code);
 u8 PL_hp (u8 char_code);
 u8 PL_chCode(u8 player_code);
 u32 PL_lastAtk (u8 player_code);
-u8 last_dir (u8 player_code);
+u8 Pl_lastDir (u8 player_code);
 
 #endif /* _PLAYER_H */

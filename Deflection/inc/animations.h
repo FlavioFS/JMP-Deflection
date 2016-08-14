@@ -9,13 +9,13 @@
 #define ANIM_WALK_D   5
 #define ANIM_WALK_L   6
 #define ANIM_WALK_R   7
-#define ANIM_ATK_U    8
-#define ANIM_ATK_D    9
-#define ANIM_ATK_L   10
-#define ANIM_ATK_R   11
-#define ANIM_FAINT_U 12
-#define ANIM_FAINT_D 13
-#define ANIM_FAINT_L 14
-#define ANIM_FAINT_R 15
+//#define ANIM_ATK_U    8
+//#define ANIM_ATK_D    9
+#define ANIM_ATK_L   8
+#define ANIM_ATK_R   9
+//#define ANIM_FAINT_U 12
+//#define ANIM_FAINT_D 13
+//#define ANIM_FAINT_L 14
+//#define ANIM_FAINT_R 15
 
 #endif /* _ANIMATIONS_H_ */

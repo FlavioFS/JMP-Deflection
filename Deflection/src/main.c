@@ -4,10 +4,10 @@
 
 #include <genesis.h>
 #include "vector_utils.h"
-#include "arena.h"
-#include "controls.h"
- #include "character.h"
-#include "knight.h"
+//#include "arena.h"
+//#include "controls.h"
+#include "character.h"
+//#include "knight.h"
 #include "debug_tile.h"
 #include "screens.h"
 #include "gfx.h"

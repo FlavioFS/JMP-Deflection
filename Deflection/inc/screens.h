@@ -7,6 +7,7 @@
 #include "player.h"
 #include "animations.h"
 #include "arena.h"
+#include "controls.h"
 
 #define MAIN_SCREEN                0
 #define CHARACTER_SELECTION_SCREEN 1
@@ -32,7 +33,7 @@ void options_screen();					// [7]
 void credits_screen();					// [8]
 
 // Joy Handlers (callbacks)
-void joyNonDirectional ( u16 joy, u16 changed, u16 state );
+//void joyNonDirectional ( u16 joy, u16 changed, u16 state );
 void emptyJoyHandler ( u16 joy, u16 changed, u16 state );
 
 // TODO remove faint?

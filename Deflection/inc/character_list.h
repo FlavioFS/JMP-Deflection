@@ -21,6 +21,7 @@ extern s16 diag_speed   [CHARACTER_LIST_SIZE];
 extern s16 speed        [CHARACTER_LIST_SIZE];
 extern SpriteDefinition character_sprites [CHARACTER_LIST_SIZE];
 
+u16 status_preview [CHARACTER_LIST_SIZE][4];
 
 u8  CHL_hp   (u8 character_code);
 u8  CHL_dPwr (u8 character_code);
@@ -29,6 +30,11 @@ u32 CHL_atkD (u8 character_code);
 s16 CHL_dSpd (u8 character_code);
 s16 CHL_spd  (u8 character_code);
 SpriteDefinition * CHL_chSprite (u8 character_code);
+
+u16 hp_preview     (u8 character_code);
+u16 mspd_preview   (u8 character_code);
+u16 dpower_preview (u8 character_code);
+u16 delay_preview  (u8 character_code);
 
 void CHL_initCharacterList();
 

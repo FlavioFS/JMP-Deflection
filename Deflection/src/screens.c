@@ -211,13 +211,44 @@ void character_selection_screen()
 	SPR_setAnim(&sprites[P2_CODE+4], 2);
 	SPR_update(sprites, 6);
 
+
+	// Character Status
+	// "                   HP                   "
+	// "                 Speed                  "
+	// "                 Power                  "
+	// "                 Delay                  "
+	VDP_drawText("HP"   , 19, 23);
+	VDP_drawText("Speed", 17, 24);
+	VDP_drawText("Power", 17, 25);
+	VDP_drawText("Delay", 17, 26);
+
+	#define HPE_TILE  TILE_ATTR_FULL(PAL3, FALSE, FALSE, FALSE, TILE_USERINDEX+1 )
+	#define HP_TILE   TILE_ATTR_FULL(PAL3, FALSE, FALSE, FALSE, TILE_USERINDEX+2 )
+	#define MSPD_TILE TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+3 )
+	#define DPWR_TILE TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+4 )
+	#define CD_TILE   TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+5 )
+
+	// HP, Move Speed, Deflection Power, Cooldown
+	int i = 0;
+	for ( i = 0; i < hp_preview(choices[0]); i++ )     VDP_drawImageEx(BPLAN, &spr_hp_def  , HP_TILE  , 15-i, 23, FALSE, TRUE);
+	for ( i = 0; i < mspd_preview(choices[0]); i++ )   VDP_drawImageEx(BPLAN, &spr_mspd_def, MSPD_TILE, 15-i, 24, FALSE, TRUE);
+	for ( i = 0; i < dpower_preview(choices[0]); i++ ) VDP_drawImageEx(BPLAN, &spr_dpwr_def, DPWR_TILE, 15-i, 25, FALSE, TRUE);
+	for ( i = 0; i < delay_preview(choices[0]); i++ )  VDP_drawImageEx(BPLAN, &spr_cd_def  , CD_TILE  , 15-i, 26, FALSE, TRUE);
+
+	for ( i = 0; i < hp_preview(choices[1]); i++ )     VDP_drawImageEx(BPLAN, &spr_hp_def  , HP_TILE  , 23+i, 23, FALSE, TRUE);
+	for ( i = 0; i < mspd_preview(choices[1]); i++ )   VDP_drawImageEx(BPLAN, &spr_mspd_def, MSPD_TILE, 23+i, 24, FALSE, TRUE);
+	for ( i = 0; i < dpower_preview(choices[1]); i++ ) VDP_drawImageEx(BPLAN, &spr_dpwr_def, DPWR_TILE, 23+i, 25, FALSE, TRUE);
+	for ( i = 0; i < delay_preview(choices[1]); i++ )  VDP_drawImageEx(BPLAN, &spr_cd_def  , CD_TILE  , 23+i, 26, FALSE, TRUE);
+
+
 	// Fade In
 	u16 palettes [64];
 	memcpy(&palettes[0],  p2_text.palette->data, 2 * 16);
 	memcpy(&palettes[16], spr_knight_def.palette->data, 2 * 16);
 	memcpy(&palettes[32], spr_wizard_def.palette->data, 2 * 16);
+	memcpy(&palettes[48], spr_hp_def.palette->data, 2 * 16);
 
-	VDP_fadeIn(0, 3 * 16 - 1, palettes, 20, FALSE);
+	VDP_fadeIn(0, 4 * 16 - 1, palettes, 20, FALSE);
 
 	// Selection loop (until both are ready)
 	do
@@ -267,6 +298,36 @@ void character_selection_screen()
 							// TODO Find a better way to replace sprites
 							SPR_setNeverVisible(&sprites[i + 2], choices[i]);
 							SPR_setNeverVisible(&sprites[i + 4], 1-choices[i]);
+
+							// HP, Move Speed, Deflection Power, Cooldown
+							int j = 0;
+							if (i == P1_CODE)
+							{
+								VDP_drawTextBG(BPLAN, "     ", TILE_ATTR_FULL(PAL3, 0, 0, 0, 0), 10, 23);
+								VDP_drawTextBG(BPLAN, "     ", TILE_ATTR_FULL(PAL3, 0, 0, 0, 0), 10, 24);
+								VDP_drawTextBG(BPLAN, "     ", TILE_ATTR_FULL(PAL3, 0, 0, 0, 0), 10, 25);
+								VDP_drawTextBG(BPLAN, "     ", TILE_ATTR_FULL(PAL3, 0, 0, 0, 0), 10, 26);
+
+								for ( j = 0; j < hp_preview(choices[0]); j++ )     VDP_drawImageEx(BPLAN, &spr_hp_def  , HP_TILE  , 15-j, 23, FALSE, TRUE);
+								for ( j = 0; j < mspd_preview(choices[0]); j++ )   VDP_drawImageEx(BPLAN, &spr_mspd_def, MSPD_TILE, 15-j, 24, FALSE, TRUE);
+								for ( j = 0; j < dpower_preview(choices[0]); j++ ) VDP_drawImageEx(BPLAN, &spr_dpwr_def, DPWR_TILE, 15-j, 25, FALSE, TRUE);
+								for ( j = 0; j < delay_preview(choices[0]); j++ )  VDP_drawImageEx(BPLAN, &spr_cd_def  , CD_TILE  , 15-j, 26, FALSE, TRUE);
+							}
+							else if (i == P2_CODE)
+							{
+								VDP_drawTextBG(BPLAN, "     ", TILE_ATTR_FULL(PAL3, 0, 0, 0, 0), 23, 23);
+								VDP_drawTextBG(BPLAN, "     ", TILE_ATTR_FULL(PAL3, 0, 0, 0, 0), 23, 24);
+								VDP_drawTextBG(BPLAN, "     ", TILE_ATTR_FULL(PAL3, 0, 0, 0, 0), 23, 25);
+								VDP_drawTextBG(BPLAN, "     ", TILE_ATTR_FULL(PAL3, 0, 0, 0, 0), 23, 26);
+
+								for ( j = 0; j < hp_preview(choices[1]); j++ )     VDP_drawImageEx(BPLAN, &spr_hp_def  , HP_TILE  , 23+j, 23, FALSE, TRUE);
+								for ( j = 0; j < mspd_preview(choices[1]); j++ )   VDP_drawImageEx(BPLAN, &spr_mspd_def, MSPD_TILE, 23+j, 24, FALSE, TRUE);
+								for ( j = 0; j < dpower_preview(choices[1]); j++ ) VDP_drawImageEx(BPLAN, &spr_dpwr_def, DPWR_TILE, 23+j, 25, FALSE, TRUE);
+								for ( j = 0; j < delay_preview(choices[1]); j++ )  VDP_drawImageEx(BPLAN, &spr_cd_def  , CD_TILE  , 23+j, 26, FALSE, TRUE);
+							}
+
+
+
 						}
 
 						// Ready
@@ -318,8 +379,8 @@ void game_screen ()
 	#define START_Y 240
 	#define CENTER_X 278
 	#define CENTER_Y 248
-	#define HP_P1_X(index) (1 + 2*index)
-	#define HP_P2_X(index) (37 - 2*index)
+	#define HP_P1_X(index) (1 + index)
+	#define HP_P2_X(index) (37 - index)
 
 	Sprite sprites [PLAYER_COUNT + 1]; // Players and the ball
 
@@ -327,7 +388,7 @@ void game_screen ()
 	/**
 	 *  This is a NESTED joy handler, so it can access the variable "sprites"
 	 */
-	void joyNonDirectional ( u16 joy, u16 changed, u16 state )
+	void atkJoyHandler ( u16 joy, u16 changed, u16 state )
 	{
 		if (joy == JOY_1)
 		{
@@ -392,10 +453,10 @@ void game_screen ()
 	// GUI (HPs)
 	int i = 0;
 	for ( i = 0; i < PL_hp(P1_CODE); i++ ) {
-		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 0, FALSE, TRUE);
+		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 1, FALSE, TRUE);
 	}
 	for ( i = 0; i < PL_hp(P2_CODE); i++ ) {
-		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P2_X(i), 0, FALSE, TRUE);
+		VDP_drawImageEx(APLAN, &spr_hpe_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+17 ), HP_P2_X(i), 1, FALSE, TRUE);
 	}
 
 	// Players
@@ -412,7 +473,7 @@ void game_screen ()
 	SPR_initSprite(&sprites[BALL_CODE], &spr_ball_def, CENTER_X, CENTER_Y, TILE_ATTR(PAL1, 1, 0, 0));
 	sprites[BALL_CODE].x = CENTER_X;
 	sprites[BALL_CODE].y = CENTER_Y;
-	SPR_setAnim(&sprites[BALL_CODE], 0); // Onle one animation for the ball
+	SPR_setAnim(&sprites[BALL_CODE], 0); // Only one animation for the ball
 
 	SPR_update(sprites, 4);
 
@@ -422,11 +483,13 @@ void game_screen ()
 	memcpy(&palettes[32], CHL_chSprite(PL_chCode(P2_CODE))->palette->data, 2 * 16);
 	memcpy(&palettes[48], tileset_arena.palette->data, 2 * 16);
 
-	JOY_setEventHandler(joyNonDirectional);
+	JOY_setEventHandler(atkJoyHandler);
 
 	VDP_fadeIn(0, 4 * 16 - 1, palettes, 20, FALSE);
 
-	while (TRUE)
+	// Game loop
+	u8 still_playing = TRUE;
+	while (still_playing)
 	{
 		control_char(&sprites[P1_CODE], P1_CODE, JOY_1);
 		control_char(&sprites[P2_CODE], P2_CODE, JOY_2);
@@ -457,7 +520,7 @@ void options_screen ()
 void credits_screen ()
 {
 	u8 pos_x = 0;
-	u8 pos_y = 2;
+	u8 pos_y = 1;
 
 	VDP_drawText(" ----- Deflection (2016, Jun-Aug) ----- ", pos_x, pos_y  );
 	VDP_drawText("  This is the final project of a subject", pos_x, pos_y+2);

@@ -352,8 +352,6 @@ void game_screen ()
 					else if (lastDir == ANIM_IDLE_D) SPR_setAnim(&sprites[P1_CODE], ANIM_ATK_R);
 					else if (lastDir == ANIM_IDLE_L) SPR_setAnim(&sprites[P1_CODE], ANIM_ATK_L);
 					else if (lastDir == ANIM_IDLE_R) SPR_setAnim(&sprites[P1_CODE], ANIM_ATK_R);
-					else VDP_drawText("X", 20, 0);
-
 				}
 			}
 		}

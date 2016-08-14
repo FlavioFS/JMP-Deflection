@@ -12,10 +12,8 @@
 #include "screens.h"
 #include "gfx.h"
 
-void joyNonDirectional ( u16 joy, u16 changed, u16 state );
 
-Character * player_one, * player_two;
-
+//Character * player_one, * player_two;
 
 int main()
 {

@@ -6,6 +6,7 @@
 #include "score.h"
 #include "player.h"
 #include "animations.h"
+#include "arena.h"
 
 #define MAIN_SCREEN                0
 #define CHARACTER_SELECTION_SCREEN 1

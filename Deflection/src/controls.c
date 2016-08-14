@@ -86,3 +86,83 @@ void control_character(Character * c, u16 joy_id)
 		}
 	}
 }
+
+void control_char ( Sprite * sprite, u8 player_code, u16 joy_id )
+{
+	static const u16 mask_directionals = (BUTTON_UP   |
+									      BUTTON_DOWN |
+									      BUTTON_LEFT |
+									      BUTTON_RIGHT);
+
+	u16 joy_state = JOY_readJoypad(joy_id);
+	joy_state 	  = JOY_readJoypad(joy_id); // debounce
+
+	u16 dir_input = joy_state & mask_directionals;
+	PlayerData * player = PL_player(player_code);
+
+	// Atk not finished, still locked, cannot reset animation or move
+	if ( getTick() - player->last_attack < CHL_atkD(player->char_code) ) return;
+
+	// Player is idling
+	if (dir_input == 0) { SPR_setAnim(sprite, player->last_direction); }
+
+	// Diagonal
+	else if ((dir_input & (BUTTON_LEFT | BUTTON_RIGHT)) && (dir_input & (BUTTON_DOWN | BUTTON_UP)))
+	{
+		s16 diagonal_speed = CHL_dSpd(player->char_code);
+
+		if (dir_input & BUTTON_LEFT)
+		{
+			sprite->x = sprite->x - diagonal_speed;
+			SPR_setAnim(sprite, ANIM_WALK_L);
+			player->last_direction = ANIM_IDLE_L;
+		}
+		else if (dir_input & BUTTON_RIGHT)
+		{
+			sprite->x = sprite->x + diagonal_speed;
+			SPR_setAnim(sprite, ANIM_WALK_R);
+			player->last_direction = ANIM_IDLE_R;
+		}
+
+		if (dir_input & BUTTON_UP)
+		{
+			sprite->y = sprite->y - diagonal_speed;
+		}
+		else if (dir_input & BUTTON_DOWN)
+		{
+			sprite->y = sprite->y + diagonal_speed;
+		}
+	}
+
+	// Straight direction
+	else
+	{
+		s16 linear_speed = CHL_spd(player->char_code);
+
+		if (dir_input & BUTTON_LEFT)
+		{
+			sprite->x = sprite->x - linear_speed;
+			SPR_setAnim(sprite, ANIM_WALK_L);
+			player->last_direction = ANIM_IDLE_L;
+		}
+		else if (dir_input & BUTTON_RIGHT)
+		{
+			sprite->x = sprite->x + linear_speed;
+			SPR_setAnim(sprite, ANIM_WALK_R);
+			player->last_direction = ANIM_IDLE_R;
+		}
+
+		else if (dir_input & BUTTON_UP)
+		{
+			sprite->y = sprite->y - linear_speed;
+			SPR_setAnim(sprite, ANIM_WALK_U);
+			player->last_direction = ANIM_IDLE_U;
+		}
+		else if (dir_input & BUTTON_DOWN)
+		{
+			sprite->y = sprite->y + linear_speed;
+			SPR_setAnim(sprite, ANIM_WALK_D);
+			player->last_direction = ANIM_IDLE_D;
+		}
+	}
+}

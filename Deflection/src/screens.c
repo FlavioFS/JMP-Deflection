@@ -74,7 +74,7 @@ void menu_cooldown (u8 multiplier)
 void main_screen ()
 {
 	u8 selecting = TRUE;
-	s8 choice = 0;
+	short choice = 0;
 	u16 VALID_DIRECTION = BUTTON_UP | BUTTON_DOWN;
 
 	u8 pos_x = 16;
@@ -144,7 +144,7 @@ void character_selection_screen()
 //	VDP_setBackgroundColor(8);
 
 	// P1 and P2 choose characters in these positions (from the character list)
-	s8 choices[PLAYER_COUNT] = { KNIGHT_CODE, WIZARD_CODE };
+	short choices[PLAYER_COUNT] = { KNIGHT_CODE, WIZARD_CODE };
 
 	u8 ready[PLAYER_COUNT] = { FALSE, FALSE };	// Are the players ready or still selecting?
 	u8 success = TRUE;							// FALSE when returning to main screen
@@ -166,6 +166,7 @@ void character_selection_screen()
 
 	u16 preview_x[PLAYER_COUNT] = { 144, 402 };
 	u16 preview_y = 310;
+
 
 	// Splash arts
 	VDP_clearPlan(VDP_PLAN_B, FALSE);
@@ -212,7 +213,7 @@ void character_selection_screen()
 
 	// Fade In
 	u16 palettes [64];
-	memcpy(&palettes[0],  roster1.palette->data, 2 * 16);
+	memcpy(&palettes[0],  p2_text.palette->data, 2 * 16);
 	memcpy(&palettes[16], spr_knight_def.palette->data, 2 * 16);
 	memcpy(&palettes[32], spr_wizard_def.palette->data, 2 * 16);
 
@@ -263,10 +264,9 @@ void character_selection_screen()
 							// Updates cursor
 							sprites[i].x = pos_x[i][choices[i]];
 
+							// TODO Find a better way to replace sprites
 							SPR_setNeverVisible(&sprites[i + 2], choices[i]);
 							SPR_setNeverVisible(&sprites[i + 4], 1-choices[i]);
-//							VDP_setSpriteDirectP(i+2, CHL_chSprite(1));
-//							SPR_initSprite(&sprites[i+2], CHL_chSprite(choices[i]), preview_x[i], preview_y, TILE_ATTR(PAL1, 1, 0, i));
 						}
 
 						// Ready
@@ -303,6 +303,7 @@ void character_selection_screen()
 	{
 		PL_pickCharacter(P1_CODE, choices[P1_CODE]);
 		PL_pickCharacter(P2_CODE, choices[P2_CODE]);
+		SPR_clear();
 		set_next_screen(GAME_SCREEN);
 	}
 }
@@ -315,8 +316,8 @@ void game_screen ()
 	#define P1_START_X 210
 	#define P2_START_X 330
 	#define START_Y 240
-	#define CENTER_X 270
-	#define CENTER_Y 240
+	#define CENTER_X 278
+	#define CENTER_Y 248
 	#define HP_P1_X(index) (1 + 2*index)
 	#define HP_P2_X(index) (37 - 2*index)
 
@@ -327,10 +328,10 @@ void game_screen ()
 
 	// GUI (HPs)
 	int i = 0;
-	for ( i = 0; i < PL_player(P1_CODE).hp; i++ ) {
+	for ( i = 0; i < PL_hp(P1_CODE); i++ ) {
 		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 1, FALSE, TRUE);
 	}
-	for ( i = 0; i < PL_player(P2_CODE).hp; i++ ) {
+	for ( i = 0; i < PL_hp(P2_CODE); i++ ) {
 		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P2_X(i), 1, FALSE, TRUE);
 	}
 
@@ -362,6 +363,8 @@ void game_screen ()
 
 	while (TRUE)
 	{
+		control_char(&sprites[P1_CODE], P1_CODE, JOY_1);
+		control_char(&sprites[P2_CODE], P2_CODE, JOY_2);
 		SPR_update(sprites, 4);
 		VDP_waitVSync();
 	}
@@ -436,7 +439,7 @@ void joyNonDirectional ( u16 joy, u16 changed, u16 state )
 				if (getTick() - PL_lastAtk(P1_CODE) < CHL_cd(PL_chCode(P1_CODE))) return;
 				PL_attack(P1_CODE);
 
-				// if (player_one->sprite->animInd == 8 || player_one->sprite->animInd == 9 ) return;
+//				 if (player_one->sprite->animInd == 8 || player_one->sprite->animInd == 9 ) return;
 
 //				if (player_one->anim_idle_last_direction_id == player_one->anim_idle_up_id)
 //				{
@@ -489,7 +492,7 @@ void joyNonDirectional ( u16 joy, u16 changed, u16 state )
 	// }
 }
 
-
+// TODO setar isso depois do jogo
 void emptyJoyHandler ( u16 joy, u16 changed, u16 state )
 {
 

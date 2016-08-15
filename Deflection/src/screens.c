@@ -376,8 +376,6 @@ void game_screen ()
 	#define P1_START_X 210
 	#define P2_START_X 330
 	#define START_Y 240
-	#define CENTER_X 278
-	#define CENTER_Y 248
 	#define HP_P1_X(index) (1 + index)
 	#define HP_P2_X(index) (37 - index)
 
@@ -455,7 +453,7 @@ void game_screen ()
 		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P1_X(i), 1, FALSE, TRUE);
 	}
 	for ( i = 0; i < PL_hp(P2_CODE); i++ ) {
-		VDP_drawImageEx(APLAN, &spr_hpe_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+17 ), HP_P2_X(i), 1, FALSE, TRUE);
+		VDP_drawImageEx(APLAN, &spr_hp_def, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+16 ), HP_P2_X(i), 1, FALSE, TRUE);
 	}
 
 	// Players
@@ -496,6 +494,8 @@ void game_screen ()
 	// Game loop
 	u8 still_playing = TRUE;
 	u16 joy;
+
+	BALL_reset(&sprites[BALL_CODE]);
 	while (still_playing)
 	{
 		control_char(&sprites[P1_CODE], P1_CODE, JOY_1);
@@ -504,7 +504,6 @@ void game_screen ()
 
 		if (BALL_dangerZone(P1_CODE))
 		{
-			VDP_drawText("Danger", 20, 0);
 			if (getTick() - p1->last_attack < CHL_atkD(p1->char_code))
 			{
 				// Deflect
@@ -513,14 +512,27 @@ void game_screen ()
 			}
 			else if (BALL_isHitting(P1_CODE))
 			{
-				VDP_drawText("Died  ", 20, 0);
+				p1->hp--;
+
+				VDP_drawImageEx(APLAN, &spr_hpe_def,
+						TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+17 ),
+						HP_P1_X(p1->hp), 1, FALSE, TRUE);
+
+				BALL_reset(&sprites[BALL_CODE]);
+
+				// Dead
+				if (p1->hp == 0)
+				{
+					still_playing = FALSE;
+					set_next_screen(MAIN_SCREEN);
+				}
+
+				menu_cooldown(2);
 			}
 		}
-		else VDP_drawText("      ", 20, 0);
 
 		if (BALL_dangerZone(P2_CODE))
 		{
-			VDP_drawText("Danger", 20, 1);
 			if (getTick() - p2->last_attack < CHL_atkD(p2->char_code))
 			{
 				// Deflect
@@ -530,16 +542,30 @@ void game_screen ()
 
 			else if (BALL_isHitting(P2_CODE))
 			{
-				VDP_drawText("Died  ", 20, 1);
+				p2->hp--;
+
+				VDP_drawImageEx(APLAN, &spr_hpe_def,
+						TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+17 ),
+						HP_P2_X(p2->hp), 1, FALSE, TRUE);
+
+				BALL_reset(&sprites[BALL_CODE]);
+
+				// Dead
+				if (p2->hp == 0)
+				{
+					still_playing = FALSE;
+					set_next_screen(MAIN_SCREEN);
+				}
+				menu_cooldown(2);
 			}
 		}
-		else VDP_drawText("      ", 20, 1);
 
 		SPR_update(sprites, 4);
 		VDP_waitVSync();
 	}
 
-	JOY_setEventHandler(emptyJoyHandler);
+//	JOY_setEventHandler(emptyJoyHandler);
+	SPR_clear();
 
 }
 

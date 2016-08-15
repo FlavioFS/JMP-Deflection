@@ -11,6 +11,23 @@ void BALL_init (Sprite ball)
 }
 
 
+void BALL_reset (Sprite * ball)
+{
+	static u8 round = 0;
+	static const float starting_speedsX[PLAYER_COUNT] = { 0.2, -0.2 };
+	static const float starting_speedY[PLAYER_COUNT] = {-0.1 , 0.1};
+
+	V2D_set(&bPos, CENTER_X, CENTER_Y);
+	V2D_set(&bSpd, starting_speedsX[round], starting_speedY[round]);
+
+	ball->x = CENTER_X;
+	ball->y = CENTER_Y;
+
+	round++;
+	if (round > PLAYER_COUNT) round = 0;
+}
+
+
 void BALL_move (Sprite * ball)
 {
 	Vector2Df new_pos = { bPos.x + bSpd.x, bPos.y + bSpd.y };

@@ -4,10 +4,17 @@
 #include <genesis.h>
 #include "character_list.h"
 #include "animations.h"
+#include "vector_utils.h"
 
 #define PLAYER_COUNT 2	// 2 Player PvP game
 #define P1_CODE 0
 #define P2_CODE 1
+#define PL_HITBOX_U  1
+#define PL_HITBOX_D 23
+#define PL_HITBOX_L  6
+#define PL_HITBOX_R 16
+#define PL_HITBOX_MIN 64
+#define PL_HITBOX_MAX 196
 
 typedef struct
 {
@@ -15,21 +22,24 @@ typedef struct
 	u8 char_code;      // Selected character's code
 	u8 last_direction; // When the player stops, must look to last direction
 	u32 last_attack;   // Cannot spam attack
+	Vector2Df pos;
 } PlayerData;
 
 extern PlayerData plyr [PLAYER_COUNT];
 
 // Setters
 void PL_pickCharacter (u8 player_code, u8 character_code);
-void PL_fillHp (u8 player_code);
-void PL_attack (u8 player_code);
-void PL_setLastDir (u8 player_code, u8 direction);
+void PL_fillHp        (u8 player_code);
+void PL_attack        (u8 player_code);
+void PL_setLastDir    (u8 player_code, u8 direction);
+void PL_setPos        (u8 player_code, float x, float y);
 
 // Getters
-PlayerData * PL_player(u8 player_code);
-u8 PL_hp (u8 char_code);
-u8 PL_chCode(u8 player_code);
-u32 PL_lastAtk (u8 player_code);
-u8 Pl_lastDir (u8 player_code);
+PlayerData * PL_player  (u8 player_code);
+u8           PL_hp      (u8 char_code);
+u8           PL_chCode  (u8 player_code);
+u32          PL_lastAtk (u8 player_code);
+u8           PL_lastDir (u8 player_code);
+Vector2Df    PL_pos     (u8 player_code);
 
 #endif /* _PLAYER_H */

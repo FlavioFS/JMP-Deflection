@@ -8,6 +8,7 @@
 #include "animations.h"
 #include "arena.h"
 #include "controls.h"
+#include "ball.h"
 
 #define MAIN_SCREEN                0
 #define CHARACTER_SELECTION_SCREEN 1

@@ -3,22 +3,38 @@
 
 #include <genesis.h>
 
+#define SQRT2 1.414
+
 typedef struct Vector2D
 {
 	fix32 x;
 	fix32 y;
 } Vector2D;
 
-void bounceCharacter	( Vector2D * speed, Vector2D * position	);
-void renderPlayers		( Vector2D p1_pos, Vector2D p2_pos		);
-void joyAtkHandler		( u16 joy, u16 joyChanged, u16 state	);
+typedef struct
+{
+	float x;
+	float y;
+} Vector2Df;
+
+typedef struct
+{
+	u16 x;
+	u16 y;
+} VectorU16;
+
 
 // Vector2D utils
-fix32 dot 		( Vector2D v1, Vector2D v2 );
-Vector2D diff	( Vector2D v1, Vector2D v2 );
-fix32 sqDist	( Vector2D v1, Vector2D v2 );
-u8 absLEQ		( Vector2D  v, fix32 value );
+void      V2D_set    ( Vector2Df * v, float x, float y );
+void      V2D_setV   ( Vector2Df * v, Vector2Df v2 );
+Vector2Df V2D_prod	 (   float alpha, Vector2Df  v );
+float     V2D_dot 	 ( Vector2Df  v1, Vector2Df v2 );
+Vector2Df V2D_sum 	 ( Vector2Df  v1, Vector2Df v2 );
+Vector2Df V2D_diff	 ( Vector2Df  v1, Vector2Df v2 );
+float     V2D_sqDist ( Vector2Df  v1, Vector2Df v2 );
+u8        V2D_absLEQ ( Vector2Df   v, float value );
 
+// TODO remove this?
 const static Vector2D V2D_NORTH = {  0,  1 };
 const static Vector2D V2D_SOUTH = {  0, -1 };
 const static Vector2D  V2D_EAST = {  1,  0 };

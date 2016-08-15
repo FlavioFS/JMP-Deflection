@@ -27,7 +27,7 @@ void control_character(Character * c, u16 joy_id)
 	}
 
 	// Diagonal
-	else if (dir_input & (BUTTON_LEFT | BUTTON_RIGHT) && dir_input & (BUTTON_DOWN | BUTTON_UP))
+	else if ( (dir_input & (BUTTON_LEFT | BUTTON_RIGHT)) && (dir_input & (BUTTON_DOWN | BUTTON_UP)) )
 	{
 		if (dir_input & BUTTON_LEFT)
 		{
@@ -109,58 +109,66 @@ void control_char ( Sprite * sprite, u8 player_code, u16 joy_id )
 	// Diagonal
 	else if ((dir_input & (BUTTON_LEFT | BUTTON_RIGHT)) && (dir_input & (BUTTON_DOWN | BUTTON_UP)))
 	{
-		s16 diagonal_speed = CHL_dSpd(player->char_code);
+		float diagonal_speed = CHL_dSpd(player->char_code);
 
-		if ((dir_input & BUTTON_LEFT) && (sprite->x > AR_MIN_X))
+		if ((dir_input & BUTTON_LEFT) && (sprite->x > AR_PL_MIN_X))
 		{
-			sprite->x = sprite->x - diagonal_speed;
+			player->pos.x -= diagonal_speed;
+			sprite->x = player->pos.x;
 			SPR_setAnim(sprite, ANIM_WALK_L);
 			player->last_direction = ANIM_IDLE_L;
 		}
-		else if ((dir_input & BUTTON_RIGHT) && (sprite->x < AR_MAX_X))
+		else if ((dir_input & BUTTON_RIGHT) && (sprite->x < AR_PL_MAX_X))
 		{
-			sprite->x = sprite->x + diagonal_speed;
+			player->pos.x += diagonal_speed;
+			sprite->x = player->pos.x;
 			SPR_setAnim(sprite, ANIM_WALK_R);
 			player->last_direction = ANIM_IDLE_R;
 		}
 
-		if ((dir_input & BUTTON_UP) && (sprite->y > AR_MIN_Y))
+		if ((dir_input & BUTTON_UP) && (sprite->y > AR_PL_MIN_Y))
 		{
-			sprite->y = sprite->y - diagonal_speed;
+			player->pos.y -= diagonal_speed;
+			sprite->y = player->pos.y;
 		}
-		else if ((dir_input & BUTTON_DOWN) && (sprite->y < AR_MAX_Y))
+		else if ((dir_input & BUTTON_DOWN) && (sprite->y < AR_PL_MAX_Y))
 		{
-			sprite->y = sprite->y + diagonal_speed;
+			player->pos.y += diagonal_speed;
+			sprite->y = player->pos.y;
 		}
 	}
 
 	// Straight direction
 	else
 	{
-		s16 linear_speed = CHL_spd(player->char_code);
+		float linear_speed = CHL_spd(player->char_code);
 
-		if ((dir_input & BUTTON_LEFT) && (sprite->x > AR_MIN_X))
+		if ((dir_input & BUTTON_LEFT) && (sprite->x > AR_PL_MIN_X))
 		{
-			sprite->x = sprite->x - linear_speed;
+			player->pos.x -= linear_speed;
+			sprite->x = player->pos.x;
 			SPR_setAnim(sprite, ANIM_WALK_L);
 			player->last_direction = ANIM_IDLE_L;
 		}
-		else if ((dir_input & BUTTON_RIGHT) && (sprite->x < AR_MAX_X))
+		else if ((dir_input & BUTTON_RIGHT) && (sprite->x < AR_PL_MAX_X))
 		{
-			sprite->x = sprite->x + linear_speed;
+			player->pos.x += linear_speed;
+			sprite->x = player->pos.x;
 			SPR_setAnim(sprite, ANIM_WALK_R);
 			player->last_direction = ANIM_IDLE_R;
 		}
 
-		else if ((dir_input & BUTTON_UP) && (sprite->y > AR_MIN_Y))
+		else if ((dir_input & BUTTON_UP) && (sprite->y > AR_PL_MIN_Y))
 		{
-			sprite->y = sprite->y - linear_speed;
+			player->pos.y -= linear_speed;
+			sprite->y = player->pos.y;
 			SPR_setAnim(sprite, ANIM_WALK_U);
 			player->last_direction = ANIM_IDLE_U;
 		}
-		else if ((dir_input & BUTTON_DOWN) && (sprite->y < AR_MAX_Y))
+		else if ((dir_input & BUTTON_DOWN) && (sprite->y < AR_PL_MAX_Y))
 		{
-			sprite->y = sprite->y + linear_speed;
+			player->pos.y += linear_speed;
+			sprite->y = player->pos.y;
 			SPR_setAnim(sprite, ANIM_WALK_D);
 			player->last_direction = ANIM_IDLE_D;
 		}

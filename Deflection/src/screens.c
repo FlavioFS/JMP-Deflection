@@ -222,11 +222,11 @@ void character_selection_screen()
 	VDP_drawText("Power", 17, 25);
 	VDP_drawText("Delay", 17, 26);
 
-	#define HPE_TILE  TILE_ATTR_FULL(PAL3, FALSE, FALSE, FALSE, TILE_USERINDEX+1 )
-	#define HP_TILE   TILE_ATTR_FULL(PAL3, FALSE, FALSE, FALSE, TILE_USERINDEX+2 )
-	#define MSPD_TILE TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+3 )
-	#define DPWR_TILE TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+4 )
-	#define CD_TILE   TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+5 )
+	#define HPE_TILE  TILE_ATTR_FULL(PAL3, FALSE, FALSE, FALSE, TILE_USERINDEX+1)
+	#define HP_TILE   TILE_ATTR_FULL(PAL3, FALSE, FALSE, FALSE, TILE_USERINDEX+2)
+	#define MSPD_TILE TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+3)
+	#define DPWR_TILE TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+4)
+	#define CD_TILE   TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USERINDEX+5)
 
 	// HP, Move Speed, Deflection Power, Cooldown
 	int i = 0;
@@ -364,7 +364,6 @@ void character_selection_screen()
 	{
 		PL_pickCharacter(P1_CODE, choices[P1_CODE]);
 		PL_pickCharacter(P2_CODE, choices[P2_CODE]);
-		SPR_clear();
 		set_next_screen(GAME_SCREEN);
 	}
 }
@@ -466,6 +465,8 @@ void game_screen ()
 	sprites[P1_CODE].y = START_Y;
 	sprites[P2_CODE].x = P2_START_X;
 	sprites[P2_CODE].y = START_Y;
+	PL_setPos(P1_CODE, P1_START_X, START_Y);
+	PL_setPos(P2_CODE, P2_START_X, START_Y);
 	SPR_setAnim(&sprites[P1_CODE], ANIM_IDLE_R);
 	SPR_setAnim(&sprites[P2_CODE], ANIM_IDLE_L);
 
@@ -474,6 +475,7 @@ void game_screen ()
 	sprites[BALL_CODE].x = CENTER_X;
 	sprites[BALL_CODE].y = CENTER_Y;
 	SPR_setAnim(&sprites[BALL_CODE], 0); // Only one animation for the ball
+	BALL_init(sprites[BALL_CODE]);
 
 	SPR_update(sprites, 4);
 
@@ -487,12 +489,52 @@ void game_screen ()
 
 	VDP_fadeIn(0, 4 * 16 - 1, palettes, 20, FALSE);
 
+	PlayerData
+		* p1 = PL_player(P1_CODE),
+		* p2 = PL_player(P2_CODE);
+
 	// Game loop
 	u8 still_playing = TRUE;
+	u16 joy;
 	while (still_playing)
 	{
 		control_char(&sprites[P1_CODE], P1_CODE, JOY_1);
 		control_char(&sprites[P2_CODE], P2_CODE, JOY_2);
+		BALL_move(&sprites[BALL_CODE]);
+
+		if (BALL_dangerZone(P1_CODE))
+		{
+			VDP_drawText("Danger", 20, 0);
+			if (getTick() - p1->last_attack < CHL_atkD(p1->char_code))
+			{
+				// Deflect
+				joy = JOY_readJoypad(JOY_1);
+				BALL_deflect(joy, P1_CODE);
+			}
+			else if (BALL_isHitting(P1_CODE))
+			{
+				VDP_drawText("Died  ", 20, 0);
+			}
+		}
+		else VDP_drawText("      ", 20, 0);
+
+		if (BALL_dangerZone(P2_CODE))
+		{
+			VDP_drawText("Danger", 20, 1);
+			if (getTick() - p2->last_attack < CHL_atkD(p2->char_code))
+			{
+				// Deflect
+				joy = JOY_readJoypad(JOY_2);
+				BALL_deflect(joy, P2_CODE);
+			}
+
+			else if (BALL_isHitting(P2_CODE))
+			{
+				VDP_drawText("Died  ", 20, 1);
+			}
+		}
+		else VDP_drawText("      ", 20, 1);
+
 		SPR_update(sprites, 4);
 		VDP_waitVSync();
 	}

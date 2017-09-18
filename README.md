@@ -20,7 +20,7 @@ Repo for class assignments.
 > Create a game for Sega Genesis in C language using SGDK
 
 Short game description:  
- - Medieval characters must survive an one-hit-kill fight of projectile parrying.
+ - Medieval characters must survive a one-hit-kill fight of projectile parrying.
 
 | Topic | Details |
 |-------|-----------|

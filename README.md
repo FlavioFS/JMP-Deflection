@@ -1,5 +1,10 @@
 #  :video_game: Deflection
 
+<div>
+<img src="https://cdnb.artstation.com/p/assets/images/images/026/670/511/original/flavio-freitas-flaf-knight24-all-in-one.gif?1589395926" alt="Character gif failed to load" width="200"/>
+<img src="https://cdnb.artstation.com/p/assets/images/images/026/670/575/original/flavio-freitas-flaf-knight16-all-in-one.gif?1589396010" width="100"/>
+</div>
+
 ## About
 Repo for class assignments.  
 
